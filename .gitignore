@@ -1,0 +1,6 @@
+configuration.php
+configuration.php~
+idrc_joomla_16_dev.sql
+installation_old/*
+cache/*
+administrator/cache/*

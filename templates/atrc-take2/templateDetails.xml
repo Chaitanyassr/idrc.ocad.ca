@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<mosinstall type="template">
+	<name>ATRC - take two</name>
+	<creationDate>22 08 2006</creationDate>
+	<author>Heidi Hazelton</author>
+	<copyright>This template is released under the GNU/GPL License</copyright>
+	<authorEmail>heidi.hazelton@utoronto.ca</authorEmail>
+	<authorUrl>http://atrc.utoronto.ca</authorUrl>
+	<version>3.0</version>
+	<description>A template designed for the ATRC.</description>
+	<files>
+		<filename>index.php</filename>
+	</files>
+	<images>
+		<filename>images/banner.jpg</filename>
+		<filename>images/footer.png</filename>
+		<filename>images/nav-bottom.png</filename>
+		<filename>images/nav-mid.png</filename>
+		<filename>images/nav-top.png</filename>
+		<filename>images/title.png</filename>
+	</images>
+	<css>
+		<filename>css/template_css.css</filename>
+	</css>
+</mosinstall>

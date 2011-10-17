@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="1.6.0" client="site" method="upgrade">
+	<name>Sleek Feed</name>
+	<author>WebKul</author>
+	<creationDate>16/02/2011</creationDate>	
+	<copyright>This extension in released under the GNU/GPL License</copyright>
+	<authorEmail>sahu.vipin@gmail.com</authorEmail>
+	<authorUrl>http://www.webkul.com</authorUrl>
+	<version>1.0</version>
+	<description>Sleek Feed Display your twitter feeds, website feeds .It supports all the feeds format like Rss0.9,Rss1.0 Atomfeeds etc.</description>
+	<files>
+		<filename module="mod_sleekFeed">mod_sleekFeed.php</filename>
+		<filename module="mod_sleekFeed">styles.css</filename>
+		<folder>img</folder>
+		<folder>js</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="A suffix to be applied to the css class of the module (table.moduletable), this allows individual module styling" />
+	
+				<field name="subject0" type="text" default="" label="Subject Name" description="Input Name of First Subject " />
+				<field name="linksub0" type="text" default="" label="Link For Subject" description="Input Link (http://.......) of First Subject " />
+				<field name="subject1" type="text" default="" label="Subject1 Name" description="Input Name of Second Subject " />
+				<field name="linksub1" type="text" default="" label="Link For Subject1" description="Input Link (http://.......) of Second Subject " />
+				<field name="subject2" type="text" default="" label="Subject2 Name" description="Input Name of Third Subject " />
+				<field name="linksub2" type="text" default="" label="Link For Subject2" description="Input Link (http://.......) of Third Subject " />
+				<field name="subject3" type="text" default="" label="Subject3 Name" description="Input Name of Fourth Subject " />
+				<field name="linksub3" type="text" default="" label="Link For Subject3" description="Input Link (http://.......) of Fourth Subject "  />
+				<field name="subject4" type="text" default="" label="Subject4 Name" description="Input Name of Fifth Subject " />
+				<field name="linksub4" type="text" default="" label="Link For Subject4" description="Input Link (http://.......) of Fifth Subject "  />
+				<field name="subject5" type="text" default="" label="Subject5 Name" description="Input Name of Sixth Subject " />
+				<field name="linksub5" type="text" default="" label="Link For Subject5" description="Input Link (http://.......) of Sixth Subject "  />
+				<field name="modwidth" type="text" default="200" label="Width" description="Set here Width of This Module..." />
+				<field name="bgcolor" type="text" default="#47525c" label="BackGround Color" description="Set here The BackGround Color of This Module..." />
+				<field name="defaultab" type="list" default="subject1" label="Default Tab" description="Select the twitter bird icon to display beside the first tweet in the twitter module.">
+					<option value="subject0">subject0</option>
+					<option value="subject1">subject1</option>
+					<option value="subject2">subject2</option>
+					<option value="subject3">subject3</option>
+					<option value="subject4">subject4</option>
+					<option value="subject5">subject5</option>
+				</field>								<field name="jqueryload" type="list" default="No" label="Are you want load jQuery" description="Choose here for jQuery Option">					<option value="No">No</option>					<option value="Yes">Yes</option>				</field>
+				<field group="advanced">
+				<field name="cache" type="list" default="0" label="Caching" description="Select whether to cache the content of this module">
+					<option value="1">Use global</option>
+					<option value="0">No caching</option>
+				</field>
+				<field name="cache_time" type="text" default="900" label="Cache Time" description="The time before the module is recached" />
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>		
+
+
+

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="1.6.0" client="site" method="upgrade">
+    <name>mod_janalytics</name>
+    <author>Dean Tedesco</author>
+    <creationDate>March 2011</creationDate>
+    <copyright>Copyright (C) 2008 - 2011 Dean Tedesco. All rights reserved.</copyright>
+    <license>GNU General Public License version 3 or later; see gpl.txt</license>
+    <authorEmail>dino@tedesco.net.au</authorEmail>
+    <authorUrl>http://janalytics.tedesco.net.au/</authorUrl>
+    <version>3.0.0</version>
+    <description>MOD_JANALYTICS_XML_DESCRIPTION</description>
+    <files>
+        <filename 
+            module="mod_janalytics">mod_janalytics.php</filename>
+        <filename>index.html</filename>
+        <folder>tmpl</folder>
+    </files>
+    <languages>
+        <language 
+            tag="en-GB">languages/en-GB.mod_janalytics.ini</language>
+        <language 
+            tag="en-GB">languages/en-GB.mod_janalytics.sys.ini</language>
+    </languages>
+    <help key="JHELP_EXTENSIONS_MODULE_MANAGER_JANALYTICS" />
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field 
+                    name="gaid" 
+                    type="text" 
+                    default="" 
+                    label="MOD_JANALYTICS_FIELD_ID_LABEL" 
+                    description="MOD_JANALYTICS_FIELD_ID_DESC" />
+                <field 
+                    name="tracking" 
+                    type="list" 
+                    default="single" 
+                    label="MOD_JANALYTICS_FIELD_TRACKING_LABEL" 
+                    description="MOD_JANALYTICS_FIELD_TRACKING_DESC">
+                    <option 
+                        value="single">MOD_JANALYTICS_FIELD_TRACKING_SINGLE_OPTION</option>
+                    <option 
+                        value="multisub">MOD_JANALYTICS_FIELD_TRACKING_MULTISUB_OPTION</option>
+                    <option 
+                        value="multitop">MOD_JANALYTICS_FIELD_TRACKING_MULTITOP_OPTION</option>
+                </field>
+                <field 
+                    name="domain" 
+                    type="text" 
+                    default="" 
+                    label="MOD_JANALYTICS_FIELD_DOMAIN_LABEL" 
+                    description="MOD_JANALYTICS_FIELD_DOMAIN_DESC" />
+            </fieldset>
+            <fieldset name="advanced">
+                <field 
+                    name="anonymizeip" 
+                    type="radio" 
+                    default="off" 
+                    label="MOD_JANALYTICS_FIELD_ANONYMIZE_IP_LABEL" 
+                    description="MOD_JANALYTICS_FIELD_ANONYMIZE_IP_DESC">
+                    <option 
+                        value="on">JON</option>
+                    <option 
+                        value="off">JOFF</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

@@ -1,0 +1,57 @@
+div.asl img {
+  margin: 0;
+  padding: 0;
+}
+
+.cursor { cursor: pointer}
+
+a:hover {
+	color: #FF0000;
+}
+
+a:visited {
+	color: #663399;
+}
+
+a:active {
+	color: #99FF00;
+}
+
+.scroll {
+	text-align : left;
+	height: 140px;
+	overflow: auto;
+	border: thin solid #999999;
+	width: 357px;
+}
+
+#Caption {
+	overflow: auto;
+	padding: 10pt;
+	height: 424px;
+	width: 300px;
+}
+
+.video {
+	text-align: center;
+	position: relative;
+	left: 10%;
+}
+
+.indent {
+}
+
+.movieControl {
+	background-color: #999999;
+	border: thin solid;
+	width: 20em;
+}
+
+.densitybar {
+	background-color: #999999;
+	border: 1px outset #333333;
+}
+
+.durCell {
+	background-color: #0000FF;
+}

@@ -1,0 +1,57 @@
+
+body {background-color: #003366; margin-left: -8px; margin-right: -8px;
+margin-top: 0px; color: #000000; font-family: verdana, helvetica, arial,
+sans-serif;}
+
+img {border: none; margin: 10px; align: center;}
+
+
+td {padding: 0px; margin: 0px;}
+td.header {width: 100%; text-align: left; background-image:
+url(http://www.utoronto.ca/atrc/images/header.gif); background-color:
+#003366; background-repeat: no-repeat; z-index:-1}
+
+td.content {width: 100%; text-align: left; background-color:#ffffff; }
+td.footer {width: 100%; text-align: left; background-image:
+url(http://www.utoronto.ca/atrc/images/footer.gif); background-color:
+#003366; background-repeat: no-repeat;}
+
+div.nav {width: 640px; text-align: left; margin-left: 30px; margin-top: 1px;
+margin-right: 80px; z-index: 1;}
+div.content {margin-left: 80px;}
+
+table {padding: 0px; margin: 0px; border: none}
+
+p {margin-left: 20px; margin-right: 150px;}
+p.intro {background-color: #aaaaff; text-align: center; margin-left: 200px;
+margin-right: 200px;}
+
+ul {margin-left: 40px; margin-right: 150px; list-style-type:square;}
+
+ol {margin-left: 40px; margin-right: 150px;}
+
+h1 {margin-left: 10px; margin-right: 10px; color: #336699; font-size: 20pt; font-family: helvetica, arial,
+sans-serif;}
+h1.title {font-weight: bold; color: #336699; font-size: 22pt;font-family: helvetica, arial,
+sans-serif;}
+
+h2 {margin-left: 10px; margin-right: 10px; color: #336699; font-size: 16pt;font-family: helvetica, arial,
+sans-serif;}
+
+h3 {margin-left: 15px; margin-right: 10px; color: #336699; font-size: 14pt;font-family: helvetica, arial,
+sans-serif;}
+
+h4 {margin-left: 10px; margin-right: 10px; color: #336699; font-size: 12pt;font-family: helvetica, arial,
+sans-serif;}
+
+a {color: #003366; text-decoration: underline; font-weight:bold;}
+a:hover {color: #c47900;}
+a.nav:hover {text-decoration: underline overline;}
+a.nav {font-weight:normal; text-decoration: none}
+a.name {color:#000000; text-decoration: none;}
+
+.title {color: #336699;}
+.centre {text-align: center;}
+.hide {visibility: hidden; size: 1px; font-size:1em;}
+.spotlight{position: relative; left: 150px; top: -20px; width: 640px; text-align: left; margin-left: 30px; margin-top: 1px;
+margin-right: 80px; z-index: 1;}
