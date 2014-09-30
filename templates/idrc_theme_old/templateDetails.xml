@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.6//DTD template1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<install version="1.6" type="template">
+	<name>IDRC Theme</name>
+	<creationDate>24 February 2011</creationDate>
+	<author>Heidi Valles</author>
+	<authorEmail>hvalles@ocad.ca</authorEmail>
+	<authorUrl>http://idrc.ocad.ca</authorUrl>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<version>1.6.0</version>
+	<description>Accessible theme for IDRC site.</description>
+
+	<files>
+		<folder>css</folder>
+		<folder>html</folder>
+		<folder>images</folder>
+		<filename>index.html</filename>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<filename>template_preview.png</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>favicon.ico</filename>
+		<filename>component.php</filename>
+	</files>
+
+	<positions>
+		<position>debug</position>
+		<position>header-top</position>
+		<position>header-bottom</position>
+		<position>breadcrumbs</position>		
+		<position>left-top</position>
+		<position>left-bottom</position>
+		<position>middle-top</position>
+		<position>middle-bottom</position>
+		<position>middle-left</position>
+		<position>middle-center</position>
+		<position>middle-right</position>		
+		<position>right-top</position>
+		<position>right-bottom</position>
+		<position>footer</position>
+	</positions>
+</install>

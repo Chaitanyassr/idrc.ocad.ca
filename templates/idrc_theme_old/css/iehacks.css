@@ -1,0 +1,31 @@
+#container {
+	_margin-left:5%;
+	_margin-right:5%;
+}
+
+#main-content {
+	_margin-left: 200px;
+}
+
+#left-content {
+	_margin-left:6px;
+}
+
+#left-content li {
+	_margin-left:13px;
+}
+div#left-content{
+_width:12em;
+_border:thin solid black;
+}
+ul#mainlevel{
+margin-left:3em;
+}
+ul#mainlevel a:link, ul#mainlevel a:visited {
+	_margin-right:3px;
+	_width:auto;
+}
+
+ul#mainlevel ul a:link, ul#mainlevel ul a:visited {
+	_width:9.05em !important;
+}

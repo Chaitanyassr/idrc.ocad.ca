@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	type="module"
+	version="2.5"
+	client="site"
+	method="upgrade">
+	<name>WDS Twitter Widget</name>
+	<author>Web Design Services</author>
+	<creationDate>April 2013</creationDate>
+	<copyright>Web Design Services. All rights reserved.</copyright>
+	<license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
+	<authorUrl>http://www.webdesignservices.net</authorUrl>
+	<version>1.1</version>
+	<description><![CDATA[ 
+	<p>
+	<a href="https://www.webdesignservices.net/about-us/support-donation.html" target="_blank"><img src="../modules/mod_wdstwitterwidget/images/donate_button.png" /></a>
+	</p>
+	<p>
+	<a href="http://extensions.joomla.org/extensions/social-web/social-display/twitter-display/24195/review" target="_blank"><img src="../modules/mod_wdstwitterwidget/images/feed_back.png"/></a>
+	</p>
+	<p>
+	<a href="https://www.webdesignservices.net/about-us/joomla-twitter-widget-pro.html" target="_blank"><img src="../modules/mod_wdstwitterwidget/images/oder_nowpro.png"/></a>
+	</p>
+	<h1>Important</h1><h2 style="color: red">To use this module, please follow the steps bellow:</h2>
+	<p>1) Register at <a href="https://dev.twitter.com/apps/new" target="_blank">https://dev.twitter.com/apps/new</a>
+	 and create a new app.</p>
+	<p>2) After registering, fill in App name, e.g. "_domain name_ App", description, e.g "My Twitter App", and write the address of your website. Check "I agree" next to their terms of service
+	  and click "create your Twitter application"</p>
+	<p>3) After this you app will be created. Click "Create my access token" and you should see at the bottom "access token" and "access token secret". Refresh the page if you don't see them.
+	<p>4) Copy to module settings "Consumer key", "Consumer secret", "Access token" and "Access secret"</p>
+	<h2>FAQ</h2>
+	<p><strong><span style="color: #000;">Q:</span></strong> Why do I have to trouble with all of this?<br />
+		<strong><span style="color: #000;">A:</span></strong> Twitter is removing access for all unauthorized requests, so every extension which wants to connect to Twitter
+	 must use authentication, otherwise it will stop working (many already have).</p>
+	<p><strong><span style="color: #000;">Q:</span></strong> My module doesn't work!<br />
+		<strong><span style="color: #000;">A:</span></strong> Make sure that you have copied the correct keys. If widget type is set to timeline, make sure you chose a valid Twitter username. If widget type
+		 is set to search, Twitter may return error if search query is extremely complex.</p>
+	<p><strong><span style="color: #000;">Q:</span></strong> Do you cache results?<br />
+		<strong><span style="color: #000;">A:</span></strong> Yes, but you should almost always see the latest tweets. Module will always try to get the latest tweets and save them to a cache. In case of a problem, tweets will be retrived from the cache.
+		 For high traffic sites (more than 10.000 visits per day), you may occasionally get tweets from the cache, as Twitter doesn't allow more than 180 requests per 15 minutes.
+		  If you use more requests than allowed, module will display latest saved tweets from the cache, until new 15 minute window opens.</p>
+	]]></description>
+	<files>
+		<filename module="mod_wdstwitterwidget">mod_wdstwitterwidget.php</filename>
+		<folder>css</folder>
+		<folder>lib</folder>
+		<folder>images</folder>
+		<folder>tmpl</folder>
+		<filename>helper.php</filename>
+		<filename>mod_wdstwitterwidget.xml</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field type="spacer" name="&lt;div style=&quot;background-color: #ddd; padding: 5px; text-align:center; color: red; font-weight:bold;&quot;&gt;Authentication settings (compulsory)&lt;/div&gt;" />
+				<field name="consumer_key" type="text" default="" label="Consumer key" description="Consumer key for your app at https://dev.twitter.com/apps/new" />
+				<field name="consumer_secret" type="text" default="" label="Consumer secret" description="Consumer secret for your app at https://dev.twitter.com/apps/new" />
+				<field name="access_token" type="text" default="" label="Access token" description="Access token for your app at https://dev.twitter.com/apps/new" />
+				<field name="access_secret" type="text" default="" label="Access token secret" description="Access token secret for your app at https://dev.twitter.com/apps/new" />
+				<field type="spacer" name="&lt;div style=&quot;background-color: #ddd; padding: 5px; text-align:center; color: red; font-weight:bold;&quot;&gt;Widget settings&lt;/div&gt;" />
+				<field name="type" type="list" default="1" label="Widget type" description="Choose Timeline to display tweets of a specific user. Choose Search to get results about some query">
+					<option value="1">Timeline</option>
+					<option value="0">Search</option>
+				</field>
+				<field name="username" type="text" default="twitter" label="Username" description="Twitter username for which you want to display tweets if widget type is set to Timeline" />
+				<field name="query" type="text" default="" label="Search query" description="Query to be searched if widget type is set to Search" />
+				<field name="title" type="text" default="" label="Search title" description="Search title to be displayed in the header" />
+				<field name="link_title" type="list" default="1" label="Link search title" description="When set to yes, title will be link to the search query on Twitte">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="count" type="text" default="5" label="Tweet number" description="Number of Tweets to display" />
+				<field type="spacer" name="&lt;div style=&quot;background-color: #666; padding: 5px; text-align:center; color: #fff; font-weight:bold;&quot;&gt;Module appearance &lt;/div&gt;" />
+				<field name="width" type="text" default="" label="Width" description="Module width. Set to empty to use width of the parent container" />
+				<field name="height" type="text" default="" label="Height" description="Module height. If the height is smaller than the space required for tweets to fit, scrollbar will be displayed. Set to empty to never have the scrollbar and use full height" />
+				<field name="header" type="list" default="1" label="Show header" description="Show header on top of tweets. For timeline, this will be name, username and avatar, and for search it will be the search title">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="twitter_icon" type="list" default="1" label="Show twitter icon" description="Set to yes to display small twitter icon int the header">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field type="spacer" name="&lt;div style=&quot;background-color: #666; padding: 5px; text-align:center; color: #fff; font-weight:bold;&quot;&gt;Color options &lt;/div&gt;" />
+				<field name="bgd_color" type="color" default="#ffffff" label="Background color" description="Module background color. Default is white" />
+				<field name="link_color" type="color" default="#0084B4" label="Link color" description="Link color. Default is variation of blue" />
+				<field name="border_color" type="color" default="#cccccc" label="Border color" description="Border color, default is light gray" />
+				<field name="text_color" type="color" default="#333333" label="Text color" description="Text color, default is dark gray" />
+				<field name="header_link_color" type="color" default="#333333" label="Header name color" description="Link color for the Twitter name when widget type is set to Timeline" />
+				<field name="header_sub_color" type="color" default="#999999" label="Header username color" description="Link color for the Twitter username when widget type is set to Timeline" />
+				<field name="header_sub_hover_color" type="color" default="#666666" label="Header username on hover color" description="Link color for the Twitter username on mouse hover when widget type is set to Timeline" />
+				<field name="search_title_color" type="color" default="#333333" label="Search title color" description="Link color for the Search title when widget type is set to Search" />
+				<field type="spacer" name="&lt;div style=&quot;background-color: #666; padding: 5px; text-align:center; color: #fff; font-weight:bold;&quot;&gt;Tweet appearance &lt;/div&gt;" />
+				<field name="display_name" type="list" default="1" label="Display username" description="Should the twitter username be displayed?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="avatars" type="list" default="0" label="Display avatars" description="Should avatars be displayed?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="timestamps" type="list" default="1" label="Display Timestamps" description="Should timestamps be shown?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="reply" type="list" default="1" label="Reply link" description="Should reply link be shown?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="retweet" type="list" default="1" label="Retweet link" description="Should retweet link be shown?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="favorite" type="list" default="1" label="Favorite link" description="Should favorite link be shown?">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field name="show_link" type="list" default="1" label="&lt;span style=&quot;font-size: 9px; text-decoration: underline;&quot;&gt;Donate a link to us?&lt;/span&gt;" description="This is a small link at the bottom of this app, it links to our main website and helps us grow our business. Please consider leaving it active as a small donation for our free plugin. However, you can get rid of the link by not checking this box. Hope this is possible.">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+			</fieldset>
+			<fieldset
+				name="advanced">
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+				<field
+					name="moduleclass_sfx"
+					type="text"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+				<field
+					name="cache"
+					type="list"
+					default="1"
+					label="COM_MODULES_FIELD_CACHING_LABEL"
+					description="COM_MODULES_FIELD_CACHING_DESC">
+					<option
+						value="1">JGLOBAL_USE_GLOBAL</option>
+					<option
+						value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+				<field
+					name="cache_time"
+					type="text"
+					default="900"
+					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+					description="COM_MODULES_FIELD_CACHE_TIME_DESC" />
+				<field
+					name="cachemode"
+					type="hidden"
+					default="itemid">
+					<option
+						value="itemid"></option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+	<updateservers>
+		<server type="extension" priority="1" name="WDS Twitter Widget Updates">http://www.webdesignservices.net/updates/twitter.xml</server>
+	</updateservers>
+</extension>
