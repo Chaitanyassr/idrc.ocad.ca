@@ -13,6 +13,29 @@ body {
   background-color:#fff;
 }
 
+ul#skip-links {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul#skip-links li {
+    display: inline;
+    float: left;
+    padding-right: 5px;
+}
+ul#skip-links li a {
+    color: white;
+    border: 0;
+}    
+ul#skip-links li a:focus {
+    color: inherit;
+    border: inherit;
+}    
+
 #all {
   background-color:white;
   min-height: 100%;  
@@ -83,7 +106,7 @@ body {
 
 #middle-col {
   padding: 0 0 1.8em 0;
-/*  line-height: 160%; */
+  line-height: 150%; 
   border-top: 2px solid #00aeef;  
   margin-top: 1em;  
 }
@@ -296,7 +319,6 @@ input.button {
 .back_button {
   padding-top:10px;
 }
-
 
 .newsflash h4 a {
   display: block;  
@@ -540,7 +562,7 @@ div.srfrContainer ul.srfrList li {
 }
 #wds-container {
     border: 2px solid #00aeef;
-    margin-bottom: 1em;
+    margin: 1em 0;
     padding: 0.3em;
 }
 

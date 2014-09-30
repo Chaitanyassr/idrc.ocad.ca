@@ -97,13 +97,11 @@ $menu = JSite::getMenu();
 </head>
 
 <body class="uio-demo-theme fl-focus fl-theme-uio-default">
-<div class="fl-offScreen-hidden">
-    <ul>
+    <ul id="skip-links">
       <li><a href="#to-menu">Skip to Menu</a></li> 
       <li><a href="#to-content">Skip to Content</a></li>  
       <li><a href="#to-search">Skip to Search</a></li> 
     </ul>
-  </div>
 <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
@@ -165,21 +163,19 @@ $menu = JSite::getMenu();
     <div id="middle-col" class="fl-col-flex">
               
     <div class="flc-toc-tocContainer toc"></div>    
-      <jdoc:include type="modules" name="middle-top" style="xhtml" />
+      <jdoc:include type="modules" name="middle-top" style="xhtml" />      
       <jdoc:include type="modules" name="breadcrumbs" />
       <a name="to-content"></a>
       <jdoc:include type="component" style="xhtml" />            
       
       <?php if (JRequest::getVar('view') == 'featured'): ?>
+      <jdoc:include type="modules" name="middle-center" style="xhtml" />
+      
         <div>
             <h2>Featured Projects</h2>        
           <jdoc:include type="modules" name="middle-left" style="xhtml" />
         </div>      
         
-        <div>
-            <h2>Twitter Updates</h2>        
-            <jdoc:include type="modules" name="middle-right" style="xhtml" />
-        </div>            
       <?php endif; ?>
       
       <jdoc:include type="modules" name="middle-bottom" style="xhtml" />      
