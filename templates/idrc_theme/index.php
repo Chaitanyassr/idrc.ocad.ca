@@ -154,37 +154,32 @@ $menu = JSite::getMenu();
       <div class="search-mod">
         <a name="to-search"></a>
         <jdoc:include type="modules" name="left-bottom" style="xhtml" />
-      </div>          
+      </div>               
     </div>  
     <div id="right-col" class="fl-col-fixed fl-force-right">
       <jdoc:include type="modules" name="right-top" style="xhtml" />
-      <jdoc:include type="modules" name="right-bottom" style="xhtml" />      
+      <jdoc:include type="modules" name="right-bottom" style="xhtml" />  
+       
     </div>
     
     <div id="middle-col" class="fl-col-flex">
               
-    <div class="flc-toc-tocContainer toc"></div> 
-      <?php if ($this->getBuffer('message')) : ?>
-      <!--  <div class="error">
-          <h2><?php echo JText::_('JNOTICE'); ?></h2>
-          <jdoc:include type="message" />
-        </div> -->
-      <?php endif; ?>    
+    <div class="flc-toc-tocContainer toc"></div>    
       <jdoc:include type="modules" name="middle-top" style="xhtml" />
       <jdoc:include type="modules" name="breadcrumbs" />
       <a name="to-content"></a>
       <jdoc:include type="component" style="xhtml" />            
       
       <?php if (JRequest::getVar('view') == 'featured'): ?>
-      <div class="fl-col-flex2 home-feeds">
-        <h2>Project Updates</h2>
-        <div class="fl-col">
+        <div>
+            <h2>Featured Projects</h2>        
           <jdoc:include type="modules" name="middle-left" style="xhtml" />
-        </div>    
-        <div class="fl-col">
-          <jdoc:include type="modules" name="middle-right" style="xhtml" />
-        </div>  
-      </div>
+        </div>      
+        
+        <div>
+            <h2>Twitter Updates</h2>        
+            <jdoc:include type="modules" name="middle-right" style="xhtml" />
+        </div>            
       <?php endif; ?>
       
       <jdoc:include type="modules" name="middle-bottom" style="xhtml" />      

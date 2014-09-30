@@ -298,21 +298,14 @@ input.button {
 }
 
 
-h4.newsflash-title {
-   color: #00AEEF;  
-  margin-bottom:2px;
-  text-decoration:none;
+.newsflash h4 a {
+  display: block;  
+  padding-bottom: 1em;
   border-bottom: 0;
-  padding-bottom:10px;
-  padding-top:5px;
   font-size: 1.1em;
-  font-style: italic;
+  text-decoration: underline;
 }
 
-a.newsflash-title {
-  text-decoration:none;
-  
-}
 /* site map */
 
 ul.level_1 {
@@ -546,10 +539,28 @@ div.srfrContainer ul.srfrList li {
     padding: 1px 4px;
 }
 #wds-container {
-    background-color: #FFFFFF;
-    border: none;
-    border-radius: 5px 5px 5px 5px;
+    border: 2px solid #00aeef;
+    margin-bottom: 1em;
+    padding: 0.3em;
 }
+
+#wds-container a {
+    border-bottom: 0;
+}
+#wds-header {
+    border: 0;
+}
+.wds-avatar {
+    float: right;
+}
+#wds-twitter-icon {
+    float: left;
+}
+.wds-tweet-container {
+    padding: 0.5em;
+}
+a .wds-screen-name { color: inherit; }
+
 .fl-col-flex2 .fl-col{
     margin-left:2em;
     width:40%;
