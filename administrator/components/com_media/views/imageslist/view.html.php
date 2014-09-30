@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20828 2011-02-22 04:22:21Z dextercowley $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Media component
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_media
  * @since 1.0
  */
-class MediaViewImagesList extends JView
+class MediaViewImagesList extends JViewLegacy
 {
 	function display($tpl = null)
 	{
@@ -28,9 +24,9 @@ class MediaViewImagesList extends JView
 
 		$lang	= JFactory::getLanguage();
 
-		JHTML::_('stylesheet','media/popup-imagelist.css', array(), true);
+		JHtml::_('stylesheet', 'media/popup-imagelist.css', array(), true);
 		if ($lang->isRTL()) :
-			JHTML::_('stylesheet','media/popup-imagelist_rtl.css', array(), true);
+			JHtml::_('stylesheet', 'media/popup-imagelist_rtl.css', array(), true);
 		endif;
 
 		$document = JFactory::getDocument();
@@ -40,7 +36,7 @@ class MediaViewImagesList extends JView
 		$folders = $this->get('folders');
 		$state = $this->get('state');
 
-		$this->assign('baseURL', COM_MEDIA_BASEURL);
+		$this->baseURL = COM_MEDIA_BASEURL;
 		$this->assignRef('images', $images);
 		$this->assignRef('folders', $folders);
 		$this->assignRef('state', $state);

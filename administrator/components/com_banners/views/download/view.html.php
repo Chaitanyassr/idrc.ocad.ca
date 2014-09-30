@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for download a list of tracks.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_banners
  * @since		1.6
  */
-class BannersViewDownload extends JView
+class BannersViewDownload extends JViewLegacy
 {
 	protected $form;
 	/**

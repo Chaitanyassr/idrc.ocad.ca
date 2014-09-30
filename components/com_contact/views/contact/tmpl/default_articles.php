@@ -1,13 +1,15 @@
 <?php
 /**
- * @version		$Id: default_articles.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
+
+require_once JPATH_SITE . '/components/com_content/helpers/route.php';
+
 ?>
 <?php if ($this->params->get('show_articles')) : ?>
 <div class="contact-articles">
@@ -15,10 +17,7 @@ defined('_JEXEC') or die;
 	<ol>
 		<?php foreach ($this->item->articles as $article) :	?>
 			<li>
-			<?php $link = JRoute::_('index.php?option=com_content&view=article&id='.$article->id); ?>
-			<?php echo '<a href="'.$link.'">' ?>
-				<?php echo $article->text = htmlspecialchars($article->title, ENT_COMPAT, 'UTF-8'); ?>
-				</a>
+				<?php echo JHtml::_('link', JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catslug)), htmlspecialchars($article->title, ENT_COMPAT, 'UTF-8')); ?>
 			</li>
 		<?php endforeach; ?>
 	</ol>

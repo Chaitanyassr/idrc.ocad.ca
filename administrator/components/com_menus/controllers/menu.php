@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: menu.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -40,7 +39,7 @@ class MenusControllerMenu extends JControllerForm
 	public function save($key = null, $urlVar = null)
 	{
 		// Check for request forgeries.
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$app		= JFactory::getApplication();
@@ -59,7 +58,9 @@ class MenusControllerMenu extends JControllerForm
 		}
 
 		// Make sure we are not trying to modify an administrator menu.
-		if (isset($data['client_id']) && $data['client_id'] == 1){
+		if ((isset($data['client_id']) && $data['client_id'] == 1) || strtolower($data['menutype']) == 'menu'
+			|| strtolower($data['menutype']) == 'main')
+		{
 			JError::raiseNotice(0, JText::_('COM_MENUS_MENU_TYPE_NOT_ALLOWED'));
 
 			// Redirect back to the edit screen.
@@ -90,7 +91,7 @@ class MenusControllerMenu extends JControllerForm
 			// Push up to three validation messages out to the user.
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
 			{
-				if (JError::isError($errors[$i])) {
+				if ($errors[$i] instanceof Exception) {
 					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				}
 				else {

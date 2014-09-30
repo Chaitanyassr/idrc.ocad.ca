@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default_links.php 20471 2011-01-28 14:59:07Z chdemko $
  * @package		Joomla.Site
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +12,7 @@ if ('plain' == $this->params->get('presentation_style')) :
 	echo '<h3>'.JText::_('COM_CONTACT_LINKS').'</h3>';
 else :
     echo JHtml::_($this->params->get('presentation_style').'.panel', JText::_('COM_CONTACT_LINKS'), 'display-links');
-endif; 
+endif;
 ?>
 
 <div class="contact-links">
@@ -22,14 +21,14 @@ endif;
 		    foreach(range('a', 'e') as $char) :// letters 'a' to 'e'
 			    $link = $this->contact->params->get('link'.$char);
 			    $label = $this->contact->params->get('link'.$char.'_name');
-			    
+
 			    if( ! $link) :
 			        continue;
 			    endif;
-			    
+
 			    // Add 'http://' if not present
 			    $link = (0 === strpos($link, 'http')) ? $link : 'http://'.$link;
-			    
+
 			    // If no label is present, take the link
 			    $label = ($label) ? $label : $link;
 			    ?>
@@ -41,4 +40,3 @@ endif;
 		<?php endforeach; ?>
 	</ul>
 </div>
-

@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default.php 20798 2011-02-21 16:02:32Z infograf768 $
  * @package		Joomla.Administrator
  * @subpackage	com_menus
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,12 +12,13 @@ defined('_JEXEC') or die;
 // Include the component HTML helpers.
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
+JHtml::_('behavior.multiselect');
 
-$user	= JFactory::getUser();
-$userId	= $user->get('id');
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$user		= JFactory::getUser();
+$app		= JFactory::getApplication();
+$userId		= $user->get('id');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 $ordering 	= ($listOrder == 'a.lft');
 $canOrder	= $user->authorise('core.edit.state',	'com_menus');
 $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
@@ -67,22 +67,22 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 		<thead>
 			<tr>
 				<th width="1%">
-					<input type="checkbox" name="checkall-toggle" value="" onclick="checkAll(this)" />
+					<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)" />
 				</th>
 				<th class="title">
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
-					<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'a.published', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'JSTATUS', 'a.published', $listDirn, $listOrder); ?>
 				</th>
 				<th width="13%">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ORDERING', 'a.lft', $listDirn, $listOrder); ?>
-					<?php if ($canOrder && $saveOrder) : ?>
+					<?php if ($canOrder && $saveOrder) :?>
 						<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'items.saveorder'); ?>
 					<?php endif; ?>
 				</th>
 				<th width="10%">
-					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
 				</th>
 				<th width="10%">
 					<?php echo JText::_('JGRID_HEADING_MENU_ITEM_TYPE'); ?>
@@ -90,6 +90,14 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 				<th width="5%">
 					<?php echo JHtml::_('grid.sort', 'COM_MENUS_HEADING_HOME', 'a.home', $listDirn, $listOrder); ?>
 				</th>
+				<?php
+				$assoc = isset($app->menu_associations) ? $app->menu_associations : 0;
+				if ($assoc):
+				?>
+				<th width="5%">
+					<?php echo JHtml::_('grid.sort', 'COM_MENUS_HEADING_ASSOCIATION', 'association', $listDirn, $listOrder); ?>
+				</th>
+				<?php endif;?>
 				<th width="5%">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_LANGUAGE', 'language', $listDirn, $listOrder); ?>
 				</th>
@@ -133,18 +141,18 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 					<?php endif; ?>
 					<p class="smallsub" title="<?php echo $this->escape($item->path);?>">
 						<?php echo str_repeat('<span class="gtr">|&mdash;</span>', $item->level-1) ?>
-						<?php if ($item->type != 'alias') : ?>
+						<?php if ($item->type !='url') : ?>
 							<?php if (empty($item->note)) : ?>
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
 							<?php else : ?>
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS_NOTE', $this->escape($item->alias), $this->escape($item->note));?>
 							<?php endif; ?>
-						<?php elseif(($item->type = 'alias') && $item->note) : ?>
+						<?php elseif($item->type =='url' && $item->note) : ?>
 							<?php echo JText::sprintf('JGLOBAL_LIST_NOTE', $this->escape($item->note));?>
 						<?php endif; ?></p>
 				</td>
 				<td class="center">
-					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'items.', $canChange);?>
+					<?php echo JHtml::_('MenusHtml.Menus.state', $item->published, $i, $canChange, 'cb'); ?>
 				</td>
 				<td class="order">
 					<?php if ($canChange) : ?>
@@ -171,7 +179,7 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 						<?php if ($item->language=='*' || $item->home=='0'):?>
 							<?php echo JHtml::_('jgrid.isdefault', $item->home, $i, 'items.', ($item->language != '*' || !$item->home) && $canChange);?>
 						<?php elseif ($canChange):?>
-							<a href="<?php echo JRoute::_('index.php?option=com_menus&task=items.unsetDefault&cid[]='.$item->id.'&'.JUtility::getToken().'=1');?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_menus&task=items.unsetDefault&cid[]='.$item->id.'&'.JSession::getFormToken().'=1');?>">
 								<?php echo JHtml::_('image', 'mod_languages/'.$item->image.'.gif', $item->language_title, array('title'=>JText::sprintf('COM_MENUS_GRID_UNSET_LANGUAGE', $item->language_title)), true);?>
 							</a>
 						<?php else:?>
@@ -179,11 +187,21 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 						<?php endif;?>
 					<?php endif; ?>
 				</td>
+				<?php
+				$assoc = isset($app->menu_associations) ? $app->menu_associations : 0;
+				if ($assoc):
+				?>
+				<td class="center">
+					<?php if ($item->association):?>
+						<?php echo JHtml::_('MenusHtml.Menus.association', $item->id);?>
+					<?php endif;?>
+				</td>
+				<?php endif;?>
 				<td class="center">
 					<?php if ($item->language==''):?>
 						<?php echo JText::_('JDEFAULT'); ?>
 					<?php elseif ($item->language=='*'):?>
-						<?php echo JText::alt('JALL','language'); ?>
+						<?php echo JText::alt('JALL', 'language'); ?>
 					<?php else:?>
 						<?php echo $item->language_title ? $this->escape($item->language_title) : JText::_('JUNDEFINED'); ?>
 					<?php endif;?>
@@ -196,8 +214,10 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 			<?php endforeach; ?>
 		</tbody>
 	</table>
-<?php //Load the batch processing form. ?>
-	<?php echo $this->loadTemplate('batch'); ?>
+	<?php //Load the batch processing form.is user is allowed ?>
+	<?php if($user->authorize('core.create', 'com_menus') && $user->authorize('core.edit', 'com_menus') && $user->authorize('core.edit.state', 'com_menus')) : ?>
+		<?php echo $this->loadTemplate('batch'); ?>
+	<?php endif;?>
 
 	<div>
 		<input type="hidden" name="task" value="" />

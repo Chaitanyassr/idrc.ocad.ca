@@ -1,18 +1,15 @@
 <?php
 /**
- * @version		$Id: impmade.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
-
 /**
  * Clicks Field class for the Joomla Framework.
  *
- * @package		Joomla.Framework
+ * @package		Joomla.Administrator
  * @subpackage	com_banners
  * @since		1.6
  */

@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML Languages View class for the Languages component
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_languages
  * @since		1.6
  */
-class LanguagesViewLanguages extends JView
+class LanguagesViewLanguages extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -52,35 +48,38 @@ class LanguagesViewLanguages extends JView
 		require_once JPATH_COMPONENT.'/helpers/languages.php';
 		$canDo	= LanguagesHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_MODULES_MANAGER_MODULES'), 'module.png');
-
 		JToolBarHelper::title(JText::_('COM_LANGUAGES_VIEW_LANGUAGES_TITLE'), 'langmanager.png');
 
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::addNew('language.add','JTOOLBAR_NEW');
+			JToolBarHelper::addNew('language.add');
 		}
-		
+
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::editList('language.edit','JTOOLBAR_EDIT');
+			JToolBarHelper::editList('language.edit');
 			JToolBarHelper::divider();
 		}
-		
+
 		if ($canDo->get('core.edit.state')) {
 			if ($this->state->get('filter.published') != 2) {
-				JToolBarHelper::publishList('languages.publish','JTOOLBAR_PUBLISH');
-				JToolBarHelper::unpublishList('languages.unpublish','JTOOLBAR_UNPUBLISH');
+				JToolBarHelper::publishList('languages.publish');
+				JToolBarHelper::unpublishList('languages.unpublish');
 			}
 		}
-			
+
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'languages.delete','JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::deleteList('', 'languages.delete', 'JTOOLBAR_EMPTY_TRASH');
 			JToolBarHelper::divider();
-		} else if ($canDo->get('core.edit.state')) {
-			JToolBarHelper::trash('languages.trash','JTOOLBAR_TRASH');
+		} elseif ($canDo->get('core.edit.state')) {
+			JToolBarHelper::trash('languages.trash');
 			JToolBarHelper::divider();
 		}
-				
+
 		if ($canDo->get('core.admin')) {
+			// Add install languages link to the lang installer component
+			$bar = JToolBar::getInstance('toolbar');
+			$bar->appendButton('Link', 'extension', 'COM_LANGUAGES_INSTALL', 'index.php?option=com_installer&view=languages');
+			JToolBarHelper::divider();
+
 			JToolBarHelper::preferences('com_languages');
 			JToolBarHelper::divider();
 		}

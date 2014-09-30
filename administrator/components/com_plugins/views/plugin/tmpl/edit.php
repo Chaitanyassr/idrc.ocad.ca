@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: edit.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_plugins
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +10,7 @@
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-JHTML::_('behavior.tooltip');
+JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 ?>
 <script type="text/javascript">
@@ -55,11 +54,14 @@ JHtml::_('behavior.formvalidation');
 			<!-- Plugin metadata -->
 			<?php if ($this->item->xml) : ?>
 				<?php if ($text = trim($this->item->xml->description)) : ?>
+
 					<label id="jform_extdescription-lbl">
 						<?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>
-						</label>
-						<div class="clr"></div>
-						<span class="readonly plg-desc"><?php echo JText::_($text); ?></span>
+					</label>
+					<div class="clr"></div>
+					<span class="readonly plg-desc">
+						<?php echo JText::_($text); ?>
+					</span>
 
 				<?php endif; ?>
 			<?php else : ?>
@@ -70,7 +72,7 @@ JHtml::_('behavior.formvalidation');
 	</div>
 
 	<div class="width-40 fltrt">
-	<?php echo JHtml::_('sliders.start','plugin-sliders-'.$this->item->extension_id); ?>
+	<?php echo JHtml::_('sliders.start', 'plugin-sliders-'.$this->item->extension_id); ?>
 
 		<?php echo $this->loadTemplate('options'); ?>
 

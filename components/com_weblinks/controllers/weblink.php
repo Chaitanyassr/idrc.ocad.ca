@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: weblink.php 20250 2011-01-10 14:27:02Z chdemko $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -183,7 +182,7 @@ class WeblinksControllerWeblink extends JControllerForm
 	{
 		$return = JRequest::getVar('return', null, 'default', 'base64');
 
-		if (empty($return)) {
+		if (empty($return) || !JUri::isInternal(base64_decode($return))) {
 			return JURI::base();
 		}
 		else {
@@ -258,7 +257,7 @@ class WeblinksControllerWeblink extends JControllerForm
 		$groups	= $user->getAuthorisedViewLevels();
 
 		if (!in_array($link->access, $groups)) {
-			return JError::raiseError(403, JText::_("JERROR_ALERTNOAUTHOR"));
+			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		// Check whether category access level allows access.

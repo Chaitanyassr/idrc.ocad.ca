@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20446 2011-01-26 17:18:21Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of messages.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_messages
  * @since		1.6
  */
-class MessagesViewMessages extends JView
+class MessagesViewMessages extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -55,21 +51,21 @@ class MessagesViewMessages extends JView
 		JToolBarHelper::title(JText::_('COM_MESSAGES_MANAGER_MESSAGES'), 'inbox.png');
 
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::addNew('message.add','JTOOLBAR_NEW');
+			JToolBarHelper::addNew('message.add');
 		}
 
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::custom('messages.publish', 'publish.png', 'publish_f2.png','COM_MESSAGES_TOOLBAR_MARK_AS_READ', true);
-			JToolBarHelper::custom('messages.unpublish', 'unpublish.png', 'unpublish_f2.png','COM_MESSAGES_TOOLBAR_MARK_AS_UNREAD', true);
+			JToolBarHelper::publish('messages.publish', 'COM_MESSAGES_TOOLBAR_MARK_AS_READ');
+			JToolBarHelper::unpublish('messages.unpublish', 'COM_MESSAGES_TOOLBAR_MARK_AS_UNREAD');
 		}
 
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::deleteList('', 'messages.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+			JToolBarHelper::deleteList('', 'messages.delete', 'JTOOLBAR_EMPTY_TRASH');
+		} elseif ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::trash('messages.trash','JTOOLBAR_TRASH');
+			JToolBarHelper::trash('messages.trash');
 		}
 
 		//JToolBarHelper::addNew('module.add');

@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of clients.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_banners
  * @since		1.6
  */
-class BannersViewClients extends JView
+class BannersViewClients extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -56,24 +52,24 @@ class BannersViewClients extends JView
 
 		JToolBarHelper::title(JText::_('COM_BANNERS_MANAGER_CLIENTS'), 'banners-clients.png');
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::addNew('client.add','JTOOLBAR_NEW');
+			JToolBarHelper::addNew('client.add');
 		}
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::editList('client.edit','JTOOLBAR_EDIT');
+			JToolBarHelper::editList('client.edit');
 		}
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::custom('clients.publish', 'publish.png', 'publish_f2.png','JTOOLBAR_PUBLISH', true);
-			JToolBarHelper::custom('clients.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+			JToolBarHelper::publish('clients.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolBarHelper::unpublish('clients.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 			JToolBarHelper::divider();
-			JToolBarHelper::archiveList('clients.archive','JTOOLBAR_ARCHIVE');
-			JToolBarHelper::custom('clients.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+			JToolBarHelper::archiveList('clients.archive');
+			JToolBarHelper::checkin('clients.checkin');
 		}
 		if ($this->state->get('filter.state') == -2 && $canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'clients.delete','JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::deleteList('', 'clients.delete', 'JTOOLBAR_EMPTY_TRASH');
 			JToolBarHelper::divider();
-		} else if ($canDo->get('core.edit.state')) {
-			JToolBarHelper::trash('clients.trash','JTOOLBAR_TRASH');
+		} elseif ($canDo->get('core.edit.state')) {
+			JToolBarHelper::trash('clients.trash');
 			JToolBarHelper::divider();
 		}
 

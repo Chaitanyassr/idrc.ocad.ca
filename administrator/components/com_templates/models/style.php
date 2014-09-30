@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: style.php 20228 2011-01-10 00:52:54Z eddieajau $
  * @package		Joomla.Administrator
  * @subpackage	com_templates
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -80,6 +79,11 @@ class TemplatesModelStyle extends JModelAdmin
 				if (!$user->authorise('core.delete', 'com_templates')) {
 					throw new Exception(JText::_('JERROR_CORE_DELETE_NOT_PERMITTED'));
 				}
+				// You should not delete a default style
+				if ($table->home != '0'){
+					JError::raiseWarning(SOME_ERROR_NUMBER, Jtext::_('COM_TEMPLATES_STYLE_CANNOT_DELETE_DEFAULT_STYLE'));
+					return false;
+				}
 
 				if (!$table->delete($pk)) {
 					$this->setError($table->getError());
@@ -92,9 +96,8 @@ class TemplatesModelStyle extends JModelAdmin
 			}
 		}
 
-		$cache = JFactory::getCache();
-		$cache->clean('com_templates');
-		$cache->clean('_system');
+		// Clean cache
+		$this->cleanCache();
 
 		return true;
 	}
@@ -131,12 +134,7 @@ class TemplatesModelStyle extends JModelAdmin
 
 				// Alter the title.
 				$m = null;
-				if (preg_match('#\((\d+)\)$#', $table->title, $m)) {
-					$table->title = preg_replace('#\(\d+\)$#', '('.($m[1] + 1).')', $table->title);
-				}
-				else {
-					$table->title .= ' (2)';
-				}
+				$table->title = $this->generateNewTitle(null, null, $table->title);
 
 				if (!$table->check() || !$table->store()) {
 					throw new Exception($table->getError());
@@ -147,11 +145,32 @@ class TemplatesModelStyle extends JModelAdmin
 			}
 		}
 
-		$cache = JFactory::getCache();
-		$cache->clean('com_templates');
-		$cache->clean('_system');
+		// Clean cache
+		$this->cleanCache();
 
 		return true;
+	}
+
+	/**
+	 * Method to change the title.
+	 *
+	 * @param   integer  $category_id  The id of the category.
+	 * @param   string   $alias        The alias.
+	 * @param   string   $title        The title.
+	 *
+	 * @return	string  New title.
+	 * @since	1.7.1
+	 */
+	protected function generateNewTitle($category_id, $alias, $title)
+	{
+		// Alter the title
+		$table = $this->getTable();
+		while ($table->load(array('title'=>$title)))
+		{
+			$title = JString::increment($title);
+		}
+
+		return $title;
 	}
 
 	/**
@@ -252,7 +271,7 @@ class TemplatesModelStyle extends JModelAdmin
 
 			// Convert the params field to an array.
 			$registry = new JRegistry;
-			$registry->loadJSON($table->params);
+			$registry->loadString($table->params);
 			$this->_cache[$pk]->params = $registry->toArray();
 
 			// Get the template XML.
@@ -289,7 +308,7 @@ class TemplatesModelStyle extends JModelAdmin
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $data, $group = '')
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		// Initialise variables.
 		$clientId	= $this->getState('item.client_id');
@@ -306,10 +325,8 @@ class TemplatesModelStyle extends JModelAdmin
 		$formFile	= JPath::clean($client->path.'/templates/'.$template.'/templateDetails.xml');
 
 		// Load the core and/or local language file(s).
-			$lang->load('tpl_'.$template, $client->path, null, false, false)
-		||	$lang->load('tpl_'.$template, $client->path.'/templates/'.$template, null, false, false)
-		||	$lang->load('tpl_'.$template, $client->path, $lang->getDefault(), false, false)
-		||	$lang->load('tpl_'.$template, $client->path.'/templates/'.$template, $lang->getDefault(), false, false);
+			$lang->load('tpl_'.$template, $client->path, null, false, true)
+		||	$lang->load('tpl_'.$template, $client->path.'/templates/'.$template, null, false, true);
 
 		if (file_exists($formFile)) {
 			// Get the template form.
@@ -320,9 +337,9 @@ class TemplatesModelStyle extends JModelAdmin
 
 		// Disable home field if it is default style
 
-		if ((is_array($data) && array_key_exists('home',$data) && $data['home']=='1')
+		if ((is_array($data) && array_key_exists('home', $data) && $data['home']=='1')
 			|| ((is_object($data) && isset($data->home) && $data->home=='1'))){
-			$form->setFieldAttribute('home','readonly','true');
+			$form->setFieldAttribute('home', 'readonly', 'true');
 		}
 
 		// Attempt to load the xml file.
@@ -352,6 +369,13 @@ class TemplatesModelStyle extends JModelAdmin
 	 */
 	public function save($data)
 	{
+		// Detect disabled extension
+		$extension = JTable::getInstance('Extension');
+		if ($extension->load(array('enabled' => 0, 'type' => 'template', 'element' => $data['template'], 'client_id' => $data['client_id']))) {
+			$this->setError(JText::_('COM_TEMPLATES_ERROR_SAVE_DISABLED_TEMPLATE'));
+			return false;
+		}
+
 		// Initialise variables;
 		$dispatcher = JDispatcher::getInstance();
 		$table		= $this->getTable();
@@ -365,6 +389,11 @@ class TemplatesModelStyle extends JModelAdmin
 		if ($pk > 0) {
 			$table->load($pk);
 			$isNew = false;
+		}
+		if (JRequest::getVar('task') == 'save2copy') {
+			$data['title'] = $this->generateNewTitle(null, null, $data['title']);
+			$data['home'] = 0;
+			$data['assigned'] ='';
 		}
 
 		// Bind the data.
@@ -396,7 +425,7 @@ class TemplatesModelStyle extends JModelAdmin
 		}
 
 		$user = JFactory::getUser();
-		if ($user->authorise('core.edit','com_menus') && $table->client_id==0) {
+		if ($user->authorise('core.edit', 'com_menus') && $table->client_id==0) {
 			$n		= 0;
 			$db		= JFactory::getDbo();
 			$user	= JFactory::getUser();
@@ -433,13 +462,12 @@ class TemplatesModelStyle extends JModelAdmin
 			$n += $db->getAffectedRows();
 			if ($n > 0) {
 				$app = JFactory::getApplication();
-				$app->enQueueMessage(JText::plural('COM_TEMPLATES_MENU_CHANGED',$n));
+				$app->enQueueMessage(JText::plural('COM_TEMPLATES_MENU_CHANGED', $n));
 			}
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache();
-		$cache->clean();
+		$this->cleanCache();
 
 		// Trigger the onExtensionAfterSave event.
 		$dispatcher->trigger('onExtensionAfterSave', array('com_templates.style', &$table, $isNew));
@@ -468,26 +496,23 @@ class TemplatesModelStyle extends JModelAdmin
 			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 		}
 
-		// Lookup the client_id.
-		$db->setQuery(
-			'SELECT client_id' .
-			' FROM #__template_styles' .
-			' WHERE id = '.(int) $id
-		);
-		$clientId = $db->loadResult();
-
-		if ($error = $db->getErrorMsg()) {
-			throw new Exception($error);
-		}
-		else if (!is_numeric($clientId)) {
+		$style = JTable::getInstance('Style', 'TemplatesTable');
+		if (!$style->load((int)$id)) {
 			throw new Exception(JText::_('COM_TEMPLATES_ERROR_STYLE_NOT_FOUND'));
 		}
+
+		// Detect disabled extension
+		$extension = JTable::getInstance('Extension');
+		if ($extension->load(array('enabled' => 0, 'type' => 'template', 'element' => $style->template, 'client_id' => $style->client_id))) {
+			throw new Exception(JText::_('COM_TEMPLATES_ERROR_SAVE_DISABLED_TEMPLATE'));
+		}
+
 
 		// Reset the home fields for the client_id.
 		$db->setQuery(
 			'UPDATE #__template_styles' .
 			' SET home = \'0\'' .
-			' WHERE client_id = '.(int) $clientId .
+			' WHERE client_id = '.(int) $style->client_id .
 			' AND home = \'1\''
 		);
 
@@ -507,9 +532,7 @@ class TemplatesModelStyle extends JModelAdmin
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache();
-		$cache->clean('com_templates');
-		$cache->clean('_system');
+		$this->cleanCache();
 
 		return true;
 	}
@@ -544,10 +567,10 @@ class TemplatesModelStyle extends JModelAdmin
 		if ($error = $db->getErrorMsg()) {
 			throw new Exception($error);
 		}
-		else if (!is_numeric($style->client_id)) {
+		elseif (!is_numeric($style->client_id)) {
 			throw new Exception(JText::_('COM_TEMPLATES_ERROR_STYLE_NOT_FOUND'));
 		}
-		else if ($style->home=='1') {
+		elseif ($style->home=='1') {
 			throw new Exception(JText::_('COM_TEMPLATES_ERROR_CANNOT_UNSET_DEFAULT_STYLE'));
 		}
 
@@ -563,9 +586,7 @@ class TemplatesModelStyle extends JModelAdmin
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache();
-		$cache->clean('com_templates');
-		$cache->clean('_system');
+		$this->cleanCache();
 
 		return true;
 	}
@@ -579,5 +600,16 @@ class TemplatesModelStyle extends JModelAdmin
 	public function getHelp()
 	{
 		return (object) array('key' => $this->helpKey, 'url' => $this->helpURL);
+	}
+
+	/**
+	 * Custom clean cache method
+	 *
+	 * @since	1.6
+	 */
+	protected function cleanCache($group = null, $client_id = 0)
+	{
+		parent::cleanCache('com_templates');
+		parent::cleanCache('_system');
 	}
 }

@@ -1,16 +1,12 @@
 <?php
 /**
- * version $Id: view.html.php 20523 2011-02-03 01:26:20Z dextercowley $
- * @package		Joomla
- * @subpackage	Content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Site
+ * @subpackage	com_content
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Content component
@@ -19,7 +15,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_content
  * @since 1.5
  */
-class ContentViewCategory extends JView
+class ContentViewCategory extends JViewLegacy
 {
 	protected $state;
 	protected $items;
@@ -47,16 +43,19 @@ class ContentViewCategory extends JView
 		$pagination = $this->get('Pagination');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
 
-		if ($category == false) {
+		if ($category == false)
+		{
 			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
-		if ($parent == false) {
+		if ($parent == false)
+		{
 			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
@@ -69,7 +68,7 @@ class ContentViewCategory extends JView
 		$user	= JFactory::getUser();
 		$groups	= $user->getAuthorisedViewLevels();
 		if (!in_array($category->access, $groups)) {
-			return JError::raiseError(403, JText::_("JERROR_ALERTNOAUTHOR"));
+			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		// PREPARE THE DATA
@@ -89,25 +88,33 @@ class ContentViewCategory extends JView
 				$item->parent_slug = null;
 			}
 
+			$item->catslug = $item->category_alias ? ($item->catid.':'.$item->category_alias) : $item->catid;
 			$item->event = new stdClass();
 
 			$dispatcher = JDispatcher::getInstance();
 
-			// Ignore content plugins on links.
-			if ($i < $numLeading + $numIntro) {
-				$item->introtext = JHtml::_('content.prepare', $item->introtext);
-
-				$results = $dispatcher->trigger('onContentAfterTitle', array('com_content.article', &$item, &$item->params, 0));
-				$item->event->afterDisplayTitle = trim(implode("\n", $results));
-
-				$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_content.article', &$item, &$item->params, 0));
-				$item->event->beforeDisplayContent = trim(implode("\n", $results));
-
-				$results = $dispatcher->trigger('onContentAfterDisplay', array('com_content.article', &$item, &$item->params, 0));
-				$item->event->afterDisplayContent = trim(implode("\n", $results));
+			// Old plugins: Ensure that text property is available
+			if (!isset($item->text))
+			{
+				$item->text = $item->introtext;
 			}
+
+			JPluginHelper::importPlugin('content');
+			$results = $dispatcher->trigger('onContentPrepare', array ('com_content.category', &$item, &$this->params, 0));
+
+			// Old plugins: Use processed text as introtext
+			$item->introtext = $item->text;
+
+			$results = $dispatcher->trigger('onContentAfterTitle', array('com_content.category', &$item, &$item->params, 0));
+			$item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+			$results = $dispatcher->trigger('onContentBeforeDisplay', array('com_content.category', &$item, &$item->params, 0));
+			$item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+			$results = $dispatcher->trigger('onContentAfterDisplay', array('com_content.category', &$item, &$item->params, 0));
+			$item->event->afterDisplayContent = trim(implode("\n", $results));
 		}
-		
+
 		// Check for layout override only if this is not the active menu item
 		// If it is the active menu item, then the view and category id will match
 		$active	= $app->getMenu()->getActive();
@@ -125,7 +132,7 @@ class ContentViewCategory extends JView
 
 		// For blog layouts, preprocess the breakdown of leading, intro and linked articles.
 		// This makes it much easier for the designer to just interrogate the arrays.
-		if ($this->getLayout() != 'default') {
+		if (($params->get('layout_type') == 'blog') || ($this->getLayout() == 'blog')) {
 			$max = count($items);
 
 			// The first group is the leading articles.
@@ -149,19 +156,20 @@ class ContentViewCategory extends JView
 				$this->intro_items = ContentHelperQuery::orderDownColumns($this->intro_items, $this->columns);
 			}
 
+			$limit = $numLeading + $numIntro + $numLinks;
 			// The remainder are the links.
-			for ($i = $numLeading + $numIntro; $i < $max; $i++)
+			for ($i = $numLeading + $numIntro; $i < $limit && $i < $max;$i++)
 			{
-				$this->link_items[$i] = &$items[$i];
+					$this->link_items[$i] = &$items[$i];
 			}
 		}
 
 		$children = array($category->id => $children);
-		
+
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
-		$this->assign('maxLevel', $params->get('maxLevel', -1));
+		$this->maxLevel = $params->get('maxLevel', -1);
 		$this->assignRef('state', $state);
 		$this->assignRef('items', $items);
 		$this->assignRef('category', $category);
@@ -170,7 +178,7 @@ class ContentViewCategory extends JView
 		$this->assignRef('parent', $parent);
 		$this->assignRef('pagination', $pagination);
 		$this->assignRef('user', $user);
-		
+
 		$this->_prepareDocument();
 
 		parent::display($tpl);
@@ -222,8 +230,11 @@ class ContentViewCategory extends JView
 		if (empty($title)) {
 			$title = $app->getCfg('sitename');
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0)) {
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
 			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+		}
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
+			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
 
 		$this->document->setTitle($title);
@@ -232,7 +243,7 @@ class ContentViewCategory extends JView
 		{
 			$this->document->setDescription($this->category->metadesc);
 		}
-		elseif (!$this->category->metadesc && $this->params->get('menu-meta_description')) 
+		elseif (!$this->category->metadesc && $this->params->get('menu-meta_description'))
 		{
 			$this->document->setDescription($this->params->get('menu-meta_description'));
 		}
@@ -241,13 +252,14 @@ class ContentViewCategory extends JView
 		{
 			$this->document->setMetadata('keywords', $this->category->metakey);
 		}
-		elseif (!$this->category->metakey && $this->params->get('menu-meta_keywords')) 
+		elseif (!$this->category->metakey && $this->params->get('menu-meta_keywords'))
 		{
 			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
 		}
 
-		if ($app->getCfg('MetaTitle') == '1') {
-			$this->document->setMetaData('title', $this->category->getMetadata()->get('page_title'));
+		if ($this->params->get('robots'))
+		{
+			$this->document->setMetadata('robots', $this->params->get('robots'));
 		}
 
 		if ($app->getCfg('MetaAuthor') == '1') {

@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Categories view class for the Category package.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_categories
  * @since		1.6
  */
-class CategoriesController extends JController
+class CategoriesController extends JControllerLegacy
 {
 	/**
 	 * @var		string	The extension for which the categories apply.

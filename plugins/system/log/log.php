@@ -1,44 +1,43 @@
 <?php
 /**
- * @version		$Id: log.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
-
 /**
  * Joomla! System Logging Plugin
  *
- * @package		Joomla
- * @subpackage	System
+ * @package		Joomla.Plugin
+ * @subpackage	System.log
  */
 class  plgSystemLog extends JPlugin
 {
 	function onUserLoginFailure($response)
 	{
-		jimport('joomla.error.log');
-
 		$log = JLog::getInstance();
 		$errorlog = array();
 
 		switch($response['status'])
 		{
-			case JAUTHENTICATE_STATUS_CANCEL :
+			case JAuthentication::STATUS_SUCCESS :
 			{
 				$errorlog['status']  = $response['type'] . " CANCELED: ";
 				$errorlog['comment'] = $response['error_message'];
 				$log->addEntry($errorlog);
 			} break;
 
-			case JAUTHENTICATE_STATUS_FAILURE :
+			case JAuthentication::STATUS_FAILURE :
 			{
 				$errorlog['status']  = $response['type'] . " FAILURE: ";
-				$errorlog['comment'] = $response['error_message'];
+				if ($this->params->get('log_username', 0)) {
+					$errorlog['comment'] = $response['error_message'] . ' ("' . $response['username'] . '")';
+				}
+				else {
+					$errorlog['comment'] = $response['error_message'];
+				}
 				$log->addEntry($errorlog);
 			}	break;
 

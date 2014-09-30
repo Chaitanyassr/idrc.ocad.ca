@@ -1,33 +1,29 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	com_banners
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Banners Controller
  *
- * @package		Joomla
- * @subpackage	Banners
+ * @package		Joomla.Site
+ * @subpackage	com_banners
  * @since		1.5
  */
-class BannersController extends JController
+class BannersController extends JControllerLegacy
 {
 	function click()
 	{
 		$id = JRequest::getInt('id', 0);
 
 		if ($id) {
-			$model = $this->getModel('Banner','BannersModel',array('ignore_request'=>true));
-			$model->setState('banner.id',$id);
+			$model = $this->getModel('Banner', 'BannersModel', array('ignore_request'=>true));
+			$model->setState('banner.id', $id);
 			$model->click();
 			$this->setRedirect($model->getUrl());
 		}

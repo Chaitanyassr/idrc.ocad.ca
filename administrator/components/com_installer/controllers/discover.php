@@ -1,20 +1,18 @@
 <?php
 /**
- * @version		$Id: discover.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
-// No direct access.
 defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Administrator
  * @subpackage	com_installer
  */
-class InstallerControllerDiscover extends JController
+class InstallerControllerDiscover extends JControllerLegacy
 {
 	/**
 	 * Refreshes the cache of discovered extensions.
@@ -25,7 +23,7 @@ class InstallerControllerDiscover extends JController
 	{
 		$model = $this->getModel('discover');
 		$model->discover();
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover',false));
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover', false));
 	}
 
 	/**
@@ -37,7 +35,7 @@ class InstallerControllerDiscover extends JController
 	{
 		$model = $this->getModel('discover');
 		$model->discover_install();
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover',false));
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover', false));
 	}
 
 	/**
@@ -49,6 +47,6 @@ class InstallerControllerDiscover extends JController
 	{
 		$model = $this->getModel('discover');
 		$model->purge();
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover',false), $model->_message);
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=discover', false), $model->_message);
 	}
 }

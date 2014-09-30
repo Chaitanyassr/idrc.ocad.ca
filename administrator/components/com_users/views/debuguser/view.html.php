@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of users.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_users
  * @since		1.6
  */
-class UsersViewDebugUser extends JView
+class UsersViewDebugUser extends JViewLegacy
 {
 	protected $actions;
 	protected $items;
@@ -29,6 +25,12 @@ class UsersViewDebugUser extends JView
 	 */
 	public function display($tpl = null)
 	{
+		// Access check.
+		if (!JFactory::getUser()->authorise('core.manage', 'com_users') || !JFactory::getConfig()->get('debug'))
+		{
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
+
 		$this->actions		= $this->get('DebugActions');
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');

@@ -1,14 +1,13 @@
 <?php
 /**
- * @version		$Id: featured.php 20267 2011-01-11 03:44:44Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-require_once dirname(__FILE__).DS.'articles.php';
+require_once dirname(__FILE__) . '/articles.php';
 
 /**
  * About Page Model
@@ -39,6 +38,7 @@ class ContentModelFeatured extends ContentModelArticles
 				'access', 'a.access', 'access_level',
 				'created', 'a.created',
 				'created_by', 'a.created_by',
+				'created_by_alias', 'a.created_by_alias',
 				'ordering', 'a.ordering',
 				'featured', 'a.featured',
 				'language', 'a.language',
@@ -67,7 +67,7 @@ class ContentModelFeatured extends ContentModelArticles
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid, a.state, a.access, a.created, a.hits,' .
+				'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid, a.state, a.access, a.created, a.created_by_alias, a.hits,' .
 				'a.language, a.publish_up, a.publish_down'
 			)
 		);
@@ -75,7 +75,7 @@ class ContentModelFeatured extends ContentModelArticles
 
 		// Join over the language
 		$query->select('l.title AS language_title');
-		$query->join('LEFT', '`#__languages` AS l ON l.lang_code = a.language');
+		$query->join('LEFT', $db->quoteName('#__languages').' AS l ON l.lang_code = a.language');
 
 		// Join over the content table.
 		$query->select('fp.ordering');
@@ -106,7 +106,7 @@ class ContentModelFeatured extends ContentModelArticles
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
 			$query->where('a.state = ' . (int) $published);
-		} else if ($published === '') {
+		} elseif ($published === '') {
 			$query->where('(a.state = 0 OR a.state = 1)');
 		}
 
@@ -116,7 +116,7 @@ class ContentModelFeatured extends ContentModelArticles
 			if (stripos($search, 'id:') === 0) {
 				$query->where('a.id = '.(int) substr($search, 3));
 			} else {
-				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+				$search = $db->Quote('%'.$db->escape($search, true).'%');
 				$query->where('a.title LIKE '.$search.' OR a.alias LIKE '.$search);
 			}
 		}
@@ -127,7 +127,7 @@ class ContentModelFeatured extends ContentModelArticles
 		}
 
 		// Add the list ordering clause.
-		$query->order($db->getEscaped($this->getState('list.ordering', 'a.title')).' '.$db->getEscaped($this->getState('list.direction', 'ASC')));
+		$query->order($db->escape($this->getState('list.ordering', 'a.title')).' '.$db->escape($this->getState('list.direction', 'ASC')));
 
 		//echo nl2br(str_replace('#__','jos_',(string)$query));
 		return $query;

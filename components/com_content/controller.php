@@ -1,16 +1,12 @@
 <?php
 /**
- * @version		$Id: controller.php 20727 2011-02-16 10:51:28Z infograf768 $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Content Component Controller
@@ -19,7 +15,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_content
  * @since		1.5
  */
-class ContentController extends JController
+class ContentController extends JControllerLegacy
 {
 	function __construct($config = array())
 	{
@@ -29,7 +25,7 @@ class ContentController extends JController
 		}
 		// Article frontpage Editor article proxying:
 		elseif(JRequest::getCmd('view') === 'articles' && JRequest::getCmd('layout') === 'modal') {
-			JHTML::_('stylesheet','system/adminlist.css', array(), true);
+			JHtml::_('stylesheet', 'system/adminlist.css', array(), true);
 			$config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
 		}
 
@@ -49,7 +45,7 @@ class ContentController extends JController
 	{
 		$cachable = true;
 
-		JHTML::_('behavior.caption');
+		JHtml::_('behavior.caption');
 
 		// Set the default view name and format from the Request.
 		// Note we are using a_id to avoid collisions with the router and the return page.
@@ -66,8 +62,8 @@ class ContentController extends JController
 			$cachable = false;
 		}
 
-		$safeurlparams = array('catid'=>'INT','id'=>'INT','cid'=>'ARRAY','year'=>'INT','month'=>'INT','limit'=>'INT','limitstart'=>'INT',
-			'showall'=>'INT','return'=>'BASE64','filter'=>'STRING','filter_order'=>'CMD','filter_order_Dir'=>'CMD','filter-search'=>'STRING','print'=>'BOOLEAN','lang'=>'CMD');
+		$safeurlparams = array('catid'=>'INT', 'id'=>'INT', 'cid'=>'ARRAY', 'year'=>'INT', 'month'=>'INT', 'limit'=>'UINT', 'limitstart'=>'UINT',
+			'showall'=>'INT', 'return'=>'BASE64', 'filter'=>'STRING', 'filter_order'=>'CMD', 'filter_order_Dir'=>'CMD', 'filter-search'=>'STRING', 'print'=>'BOOLEAN', 'lang'=>'CMD', 'Itemid'=>'INT');
 
 		// Check for edit form.
 		if ($vName == 'form' && !$this->checkEditId('com_content.edit.article', $id)) {

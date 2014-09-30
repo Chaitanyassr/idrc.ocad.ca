@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Newsfeeds master display controller.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_newsfeeds
  * @since		1.6
  */
-class NewsfeedsController extends JController
+class NewsfeedsController extends JControllerLegacy
 {
 	/**
 	 * Method to display a view.

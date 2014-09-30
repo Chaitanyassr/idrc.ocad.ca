@@ -1,23 +1,19 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of plugins.
  *
  * @package		Joomla.Administrator
- * @subpackage	Plugins
+ * @subpackage	com_plugins
  * @since		1.5
  */
-class PluginsViewPlugins extends JView
+class PluginsViewPlugins extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -38,6 +34,14 @@ class PluginsViewPlugins extends JView
 			return false;
 		}
 
+			// Check if there are no matching items
+		if(!count($this->items)){
+			JFactory::getApplication()->enqueueMessage(
+				JText::_('COM_PLUGINS_MSG_MANAGE_NO_PLUGINS')
+				, 'warning'
+			);
+		}
+
 		parent::display($tpl);
 		$this->addToolbar();
 	}
@@ -55,15 +59,15 @@ class PluginsViewPlugins extends JView
 		JToolBarHelper::title(JText::_('COM_PLUGINS_MANAGER_PLUGINS'), 'plugin');
 
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::editList('plugin.edit', 'JTOOLBAR_EDIT');
+			JToolBarHelper::editList('plugin.edit');
 		}
 
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::custom('plugins.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_ENABLE', true);
-			JToolBarHelper::custom('plugins.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_DISABLE', true);
+			JToolBarHelper::publish('plugins.publish', 'JTOOLBAR_ENABLE', true);
+			JToolBarHelper::unpublish('plugins.unpublish', 'JTOOLBAR_DISABLE', true);
 			JToolBarHelper::divider();
-			JToolBarHelper::custom('plugins.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+			JToolBarHelper::checkin('plugins.checkin');
 		}
 
 		if ($canDo->get('core.admin')) {

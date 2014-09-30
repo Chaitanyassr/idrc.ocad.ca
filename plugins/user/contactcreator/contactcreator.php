@@ -1,23 +1,19 @@
 <?php
 /**
- * @version	$Id: contactcreator.php 20240 2011-01-10 05:46:24Z dextercowley $
  *
  * Contact Creator
  * A tool to automatically create and synchronise contacts with a user
  * @copyright	Copyright (C) 2005 - 2009 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @package Contact_Creator
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.plugins.plugin');
-
 /**
  * Class for Contact Creator
- * @package		Joomla.Plugins
- * @subpackage	user.contactcreator
+ * @package		Joomla.Plugin
+ * @subpackage	User.contactcreator
  * @version		1.6
  */
 class plgUserContactCreator extends JPlugin
@@ -40,6 +36,10 @@ class plgUserContactCreator extends JPlugin
 	{
 		if(!$success) {
 			return false; // if the user wasn't stored we don't resync
+		}
+
+		if(!$isnew) {
+			return false; // if the user isn't new we don't sync
 		}
 
 		// ensure the user id is really an int
@@ -71,7 +71,7 @@ class plgUserContactCreator extends JPlugin
 		if ($id) {
 			$contact->load($id);
 		}
-		else if($this->params->get('autopublish', 0)) {
+		elseif($this->params->get('autopublish', 0)) {
 			$contact->published = 1;
 		}
 
@@ -79,14 +79,24 @@ class plgUserContactCreator extends JPlugin
 		$contact->user_id = $user_id;
 		$contact->email_to = $user['email'];
 		$contact->catid = $category;
+		$contact->language = '*';
+
+		// check for already existing alias
+		$table = JTable::getInstance('contact', 'ContactTable');
+		$contact->alias = JApplication::stringURLSafe($contact->name);
+
+		while ($table->load(array('alias' => $contact->alias, 'catid' => $contact->catid)))
+		{
+			$contact->alias = JString::increment($contact->alias, 'dash');
+		}
 
 		$autowebpage = $this->params->get('autowebpage', '');
 
 		if (!empty($autowebpage)) {
 			// search terms
-			$search_array = Array('[name]', '[username]','[userid]','[email]');
+			$search_array = array('[name]', '[username]', '[userid]', '[email]');
 			// replacement terms, urlencoded
-			$replace_array = array_map('urlencode', Array($user['name'], $user['username'],$user['id'],$user['email']));
+			$replace_array = array_map('urlencode', array($user['name'], $user['username'], $user['id'], $user['email']));
 			// now replace it in together
 			$contact->webpage = str_replace($search_array, $replace_array, $autowebpage);
 		}

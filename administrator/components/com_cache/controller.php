@@ -1,25 +1,21 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_cache
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Cache Controller
  *
  * @package		Joomla.Administrator
- * @subpackage	Cache
+ * @subpackage	com_cache
  * @since 1.6
  */
-class CacheController extends JController
+class CacheController extends JControllerLegacy
 {
 	/**
 	 * @param	boolean			If true, the view output will be cached
@@ -31,7 +27,7 @@ class CacheController extends JController
 	public function display($cachable = false, $urlparams = false)
 	{
 		require_once JPATH_COMPONENT.'/helpers/cache.php';
-		
+
 		// Get the document object.
 		$document	= JFactory::getDocument();
 
@@ -61,7 +57,7 @@ class CacheController extends JController
 
 			// Load the submenu.
 			CacheHelper::addSubmenu(JRequest::getCmd('view', 'cache'));
-			
+
 			$view->display();
 		}
 	}
@@ -69,7 +65,7 @@ class CacheController extends JController
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
+		JSession::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		$cid = JRequest::getVar('cid', array(), 'post', 'array');
 
@@ -87,7 +83,7 @@ class CacheController extends JController
 	public function purge()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
+		JSession::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		$model = $this->getModel('cache');
 		$ret = $model->purge();

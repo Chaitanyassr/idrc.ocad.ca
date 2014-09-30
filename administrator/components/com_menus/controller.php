@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Base controller class for Menu Manager.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_menus
  * @version		1.6
  */
-class MenusController extends JController
+class MenusController extends JControllerLegacy
 {
 	/**
 	 * Method to display a view.
@@ -49,7 +45,7 @@ class MenusController extends JController
 
 			return false;
 		}
-		else if ($view == 'item' && $layout == 'edit' && !$this->checkEditId('com_menus.edit.item', $id)) {
+		elseif ($view == 'item' && $layout == 'edit' && !$this->checkEditId('com_menus.edit.item', $id)) {
 
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));

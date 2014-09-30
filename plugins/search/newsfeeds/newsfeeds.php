@@ -1,21 +1,17 @@
 <?php
 /**
- * @version		$Id: newsfeeds.php 20240 2011-01-10 05:46:24Z dextercowley $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
-
 /**
  * Newsfeeds Search plugin
  *
- * @package		Joomla
- * @subpackage	Search
+ * @package		Joomla.Plugin
+ * @subpackage	Search.content
  * @since		1.6
  */
 class plgSearchNewsfeeds extends JPlugin
@@ -40,9 +36,9 @@ class plgSearchNewsfeeds extends JPlugin
 	function onContentSearchAreas()
 	{
 		static $areas = array(
-		'newsfeeds' => 'PLG_SEARCH_NEWSFEEDS_NEWSFEEDS'
-		);
-		return $areas;
+			'newsfeeds' => 'PLG_SEARCH_NEWSFEEDS_NEWSFEEDS'
+			);
+			return $areas;
 	}
 
 	/**
@@ -84,10 +80,9 @@ class plgSearchNewsfeeds extends JPlugin
 			return array();
 		}
 
-		$wheres = array();
 		switch ($phrase) {
 			case 'exact':
-				$text		= $db->Quote('%'.$db->getEscaped($text, true).'%', false);
+				$text		= $db->Quote('%'.$db->escape($text, true).'%', false);
 				$wheres2	= array();
 				$wheres2[]	= 'a.name LIKE '.$text;
 				$wheres2[]	= 'a.link LIKE '.$text;
@@ -101,7 +96,7 @@ class plgSearchNewsfeeds extends JPlugin
 				$wheres = array();
 				foreach ($words as $word)
 				{
-					$word		= $db->Quote('%'.$db->getEscaped($word, true).'%', false);
+					$word		= $db->Quote('%'.$db->escape($word, true).'%', false);
 					$wheres2	= array();
 					$wheres2[]	= 'a.name LIKE '.$word;
 					$wheres2[]	= 'a.link LIKE '.$word;
@@ -132,14 +127,29 @@ class plgSearchNewsfeeds extends JPlugin
 		$rows = array();
 		if (!empty($state)) {
 			$query	= $db->getQuery(true);
-			$query->select('a.name AS title, "" AS created, a.link AS text, '
-						.'CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug, '
-						.'CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(\':\', c.id, c.alias) ELSE c.id END as catslug, '
-						.'CONCAT_WS(" / ", '. $db->Quote($searchNewsfeeds) .', c.title) AS section,'
-						.'"1" AS browsernav');
+			//sqlsrv changes
+			$case_when = ' CASE WHEN ';
+			$case_when .= $query->charLength('a.alias');
+			$case_when .= ' THEN ';
+			$a_id = $query->castAsChar('a.id');
+			$case_when .= $query->concatenate(array($a_id, 'a.alias'), ':');
+			$case_when .= ' ELSE ';
+			$case_when .= $a_id.' END as slug';
+
+			$case_when1 = ' CASE WHEN ';
+			$case_when1 .= $query->charLength('c.alias');
+			$case_when1 .= ' THEN ';
+			$c_id = $query->castAsChar('c.id');
+			$case_when1 .= $query->concatenate(array($c_id, 'c.alias'), ':');
+			$case_when1 .= ' ELSE ';
+			$case_when1 .= $c_id.' END as catslug';
+
+			$query->select('a.name AS title, "" AS created, a.link AS text, ' . $case_when."," . $case_when1);
+			$query->select($query->concatenate(array($db->Quote($searchNewsfeeds), 'c.title'), " / ").' AS section');
+			$query->select('"1" AS browsernav');
 			$query->from('#__newsfeeds AS a');
 			$query->innerJoin('#__categories as c ON c.id = a.catid');
-			$query->where('('. $where .')' . 'AND a.published IN ('.implode(',',$state).') AND c.published = 1 AND c.access IN ('. $groups .')');
+			$query->where('('. $where .')' . 'AND a.published IN ('.implode(',', $state).') AND c.published = 1 AND c.access IN ('. $groups .')');
 			$query->order($order);
 
 			// Filter by language

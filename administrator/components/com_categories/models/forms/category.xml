@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!-- $Id: category.xml 20525 2011-02-03 01:30:22Z dextercowley $ -->
 <form>
 	<field
 		name="id"
@@ -17,7 +16,7 @@
 
 	<field
 		name="parent_id"
-		type="categoryparent"
+		type="categoryedit"
 		label="COM_CATEGORIES_FIELD_PARENT_LABEL"
 		description="COM_CATEGORIES_FIELD_PARENT_DESC"
 		class="inputbox"/>
@@ -81,7 +80,7 @@
 		label="JGLOBAL_DESCRIPTION"
 		description="COM_CATEGORIES_DESCRIPTION_DESC"
 		class="inputbox"
-		filter="safehtml"
+		filter="JComponentHelper::filterText"
 		buttons="true"
 		hide="readmore,pagebreak"/>
 
@@ -91,7 +90,7 @@
 		class="inputbox"
 		default="1"
 		size="1"
-		label="JGLOBAL_STATE"
+		label="JSTATUS"
 		description="JFIELD_PUBLISHED_DESC">
 		<option
 			value="1">
@@ -108,7 +107,7 @@
 	</field>
 	<field
 		name="buttonspacer"
-		label="JGLOBAL_ACTION_PERMISSIONS_LABEL" 
+		label="JGLOBAL_ACTION_PERMISSIONS_LABEL"
 		description="JGLOBAL_ACTION_PERMISSIONS_DESCRIPTION"
 		type="spacer" />
 	<field
@@ -218,7 +217,7 @@
 	</fields>
 
 	<fields name="metadata">
-		
+
 		<field
 			name="author"
 			type="text"

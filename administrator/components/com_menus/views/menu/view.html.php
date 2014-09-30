@@ -1,13 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * The HTML Menus Menu Item View.
@@ -16,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_menus
  * @since		1.6
  */
-class MenusViewMenu extends JView
+class MenusViewMenu extends JViewLegacy
 {
 	protected $form;
 	protected $item;
@@ -59,23 +56,23 @@ class MenusViewMenu extends JView
 		// If a new item, can save the item.  Allow users with edit permissions to apply changes to prevent returning to grid.
 		if ($isNew && $canDo->get('core.create')) {
 			if ($canDo->get('core.edit')) {
-				JToolBarHelper::apply('menu.apply','JTOOLBAR_APPLY');
+				JToolBarHelper::apply('menu.apply');
 			}
-			JToolBarHelper::save('menu.save', 'JTOOLBAR_SAVE');
+			JToolBarHelper::save('menu.save');
 		}
-		
+
 		// If user can edit, can save the item.
 		if (!$isNew && $canDo->get('core.edit')) {
-			JToolBarHelper::apply('menu.apply','JTOOLBAR_APPLY');
-			JToolBarHelper::save('menu.save','JTOOLBAR_SAVE');
+			JToolBarHelper::apply('menu.apply');
+			JToolBarHelper::save('menu.save');
 		}
 
 		// If the user can create new items, allow them to see Save & New
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::custom('menu.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+			JToolBarHelper::save2new('menu.save2new');
 		}
 		if ($isNew) {
-			JToolBarHelper::cancel('menu.cancel', 'JTOOLBAR_CANCEL');
+			JToolBarHelper::cancel('menu.cancel');
 		} else {
 			JToolBarHelper::cancel('menu.cancel', 'JTOOLBAR_CLOSE');
 		}

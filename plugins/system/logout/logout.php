@@ -1,22 +1,16 @@
 <?php
 /**
- * @version		$Id: logout.php 20240 2011-01-10 05:46:24Z dextercowley $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.plugin.plugin');
-jimport('joomla.error.error');
-jimport('joomla.utilities.utility');
-
 /**
  * Plugin class for logout redirect handling.
  *
- * @package		Joomla
- * @subpackage	plgSystemLogout
+ * @package		Joomla.Plugin
+ * @subpackage	System.logout
  */
 class plgSystemLogout extends JPlugin
 {
@@ -32,9 +26,10 @@ class plgSystemLogout extends JPlugin
 	function __construct(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
+		$this->loadLanguage();
 
-		$hash = JUtility::getHash('plgSystemLogout');
-		if (JFactory::getApplication()->isSite() and JRequest::getString($hash, null ,'cookie'))
+		$hash = JApplication::getHash('plgSystemLogout');
+		if (JFactory::getApplication()->isSite() and JRequest::getString($hash, null , 'cookie'))
 		{
 			// Destroy the cookie
 			$conf = JFactory::getConfig();
@@ -61,7 +56,7 @@ class plgSystemLogout extends JPlugin
 		if (JFactory::getApplication()->isSite())
 		{
 			// Create the cookie
-			$hash = JUtility::getHash('plgSystemLogout');
+			$hash = JApplication::getHash('plgSystemLogout');
 			$conf = JFactory::getConfig();
 			$cookie_domain 	= $conf->get('config.cookie_domain', '');
 			$cookie_path 	= $conf->get('config.cookie_path', '/');
@@ -78,7 +73,6 @@ class plgSystemLogout extends JPlugin
 		// Make sure the error is a 403 and we are in the frontend.
 		if ($error->getCode() == 403 and $app->isSite()) {
 			// Redirect to the home page
-			$this->loadLanguage();
 			$app->redirect('index.php', JText::_('PLG_SYSTEM_LOGOUT_REDIRECT'), null, true, false);
 		}
 		else {

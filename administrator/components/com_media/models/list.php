@@ -1,14 +1,11 @@
 <?php
 /**
- * @version		$Id: list.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.model');
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 
@@ -19,7 +16,7 @@ jimport('joomla.filesystem.file');
  * @subpackage	com_media
  * @since 1.5
  */
-class MediaModelList extends JModel
+class MediaModelList extends JModelLegacy
 {
 	function getState($property = null, $default = null)
 	{
@@ -90,15 +87,20 @@ class MediaModelList extends JModel
 			$basePath = COM_MEDIA_BASE;
 		}
 
-		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
+		$mediaBase = str_replace(DIRECTORY_SEPARATOR, '/', COM_MEDIA_BASE.'/');
 
 		$images		= array ();
 		$folders	= array ();
 		$docs		= array ();
 
-		// Get the list of files and folders from the given folder
-		$fileList	= JFolder::files($basePath);
-		$folderList = JFolder::folders($basePath);
+		$fileList = false;
+		$folderList = false;
+		if (file_exists($basePath))
+		{
+			// Get the list of files and folders from the given folder
+			$fileList	= JFolder::files($basePath);
+			$folderList = JFolder::folders($basePath);
+		}
 
 		// Iterate over the files if they exist
 		if ($fileList !== false) {
@@ -108,7 +110,7 @@ class MediaModelList extends JModel
 					$tmp = new JObject();
 					$tmp->name = $file;
 					$tmp->title = $file;
-					$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$file));
+					$tmp->path = str_replace(DIRECTORY_SEPARATOR, '/', JPath::clean($basePath . '/' . $file));
 					$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 					$tmp->size = filesize($tmp->path);
 
@@ -123,6 +125,7 @@ class MediaModelList extends JModel
 						case 'odg':
 						case 'bmp':
 						case 'jpeg':
+						case 'ico':
 							$info = @getimagesize($tmp->path);
 							$tmp->width		= @$info[0];
 							$tmp->height	= @$info[1];
@@ -169,7 +172,7 @@ class MediaModelList extends JModel
 			{
 				$tmp = new JObject();
 				$tmp->name = basename($folder);
-				$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$folder));
+				$tmp->path = str_replace(DIRECTORY_SEPARATOR, '/', JPath::clean($basePath . '/' . $folder));
 				$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 				$count = MediaHelper::countFiles($tmp->path);
 				$tmp->files = $count[0];

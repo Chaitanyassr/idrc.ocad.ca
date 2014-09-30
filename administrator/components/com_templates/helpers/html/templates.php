@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: templates.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -10,7 +9,7 @@ defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Administrator
- * @subpackage	Templates
+ * @subpackage	com_templates
  */
 class JHtmlTemplates
 {
@@ -32,7 +31,7 @@ class JHtmlTemplates
 		{
 			$clientPath = ($clientId == 0) ? '' : 'administrator/';
 			$thumb	= $clientPath.'templates/'.$template.'/template_thumbnail.png';
-			$html	= JHTML::_('image',$thumb,JText::_('COM_TEMPLATES_PREVIEW'));
+			$html	= JHtml::_('image', $thumb, JText::_('COM_TEMPLATES_PREVIEW'));
 			if (file_exists($preview))
 			{
 				$preview	= $baseUrl.'/templates/'.$template.'/template_preview.png';

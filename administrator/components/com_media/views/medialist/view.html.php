@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Media component
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_media
  * @since 1.0
  */
-class MediaViewMediaList extends JView
+class MediaViewMediaList extends JViewLegacy
 {
 	function display($tpl = null)
 	{
@@ -28,7 +24,7 @@ class MediaViewMediaList extends JView
 		$style = $app->getUserStateFromRequest('media.list.layout', 'layout', 'thumbs', 'word');
 
 		$lang	= JFactory::getLanguage();
-		
+
 		JHtml::_('behavior.framework', true);
 
 		$document = JFactory::getDocument();
@@ -53,7 +49,23 @@ class MediaViewMediaList extends JView
 		$folders = $this->get('folders');
 		$state = $this->get('state');
 
-		$this->assign('baseURL', JURI::root());
+		// Check for invalid folder name
+		if (empty($state->folder)) {
+			$dirname = JRequest::getVar('folder', '', '', 'string');
+			if (!empty($dirname)) {
+				$dirname = htmlspecialchars($dirname, ENT_COMPAT, 'UTF-8');
+				if ($lang->hasKey('COM_MEDIA_ERROR_UNABLE_TO_BROWSE_FOLDER_WARNDIRNAME'))
+				{
+					JError::raiseWarning(100, JText::sprintf('COM_MEDIA_ERROR_UNABLE_TO_BROWSE_FOLDER_WARNDIRNAME', $dirname));
+				}
+				else
+				{
+					JError::raiseWarning(100, sprintf('Unable to browse:&#160;%s. Directory name must only contain alphanumeric characters and no spaces.', $dirname));
+				}
+			}
+		}
+
+		$this->baseURL = JURI::root();
 		$this->assignRef('images', $images);
 		$this->assignRef('documents', $documents);
 		$this->assignRef('folders', $folders);

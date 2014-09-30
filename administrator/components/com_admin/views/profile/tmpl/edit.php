@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: edit.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_admin
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -29,7 +28,7 @@ $fieldsets = $this->form->getFieldsets();
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_admin&view=profile&layout=edit'); ?>" method="post" name="adminForm" id="profile-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_admin&view=profile&layout=edit&id='.$this->item->id); ?>" method="post" name="adminForm" id="profile-form" class="form-validate" enctype="multipart/form-data">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_ADMIN_USER_ACCOUNT_DETAILS'); ?></legend>
@@ -44,12 +43,12 @@ $fieldsets = $this->form->getFieldsets();
 
 	<div class="width-40 fltrt">
 		<?php
-		echo JHTML::_('sliders.start');
+		echo JHtml::_('sliders.start');
 		foreach ($fieldsets as $fieldset) :
 			if ($fieldset->name == 'user_details') :
 				continue;
 			endif;
-			echo JHTML::_('sliders.panel', JText::_($fieldset->label), $fieldset->name);
+			echo JHtml::_('sliders.panel', JText::_($fieldset->label), $fieldset->name);
 		?>
 		<fieldset class="panelform">
 		<ul class="adminformlist">
@@ -64,7 +63,7 @@ $fieldsets = $this->form->getFieldsets();
 		</ul>
 		</fieldset>
 		<?php endforeach; ?>
-		<?php echo JHTML::_('sliders.end'); ?>
+		<?php echo JHtml::_('sliders.end'); ?>
 
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>

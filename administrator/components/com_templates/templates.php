@@ -1,13 +1,11 @@
 <?php
 /**
- * @version		$Id: templates.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Templates
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_templates
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
 defined('_JEXEC') or die;
 
 // Access check.
@@ -15,9 +13,9 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_templates')) {
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-// Include dependancies
-jimport('joomla.application.component.controller');
+// Register helper
+JLoader::register('TemplatesHelper', dirname(__FILE__) . '/helpers/templates.php');
 
-$controller	= JController::getInstance('Templates');
+$controller	= JControllerLegacy::getInstance('Templates');
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

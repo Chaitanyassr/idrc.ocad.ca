@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: mail.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License <http://www.gnu.org/copyleft/gpl.html>
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Users mail controller.
@@ -16,12 +12,12 @@ jimport('joomla.application.component.controller');
  * @package		Joomla.Administrator
  * @subpackage	com_users
  */
-class UsersControllerMail extends JController
+class UsersControllerMail extends JControllerLegacy
 {
 	public function send()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('Mail');
 		if ($model->send()) {
@@ -37,7 +33,7 @@ class UsersControllerMail extends JController
 	public function cancel()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 		$this->setRedirect('index.php');
 	}
 }

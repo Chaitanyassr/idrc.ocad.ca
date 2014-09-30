@@ -1,18 +1,15 @@
 <?php
 /**
- * @version		$Id: imptotal.php 20742 2011-02-17 16:26:27Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
-
 /**
  * Impressions Field class for the Joomla Framework.
  *
- * @package		Joomla.Framework
+ * @package		Joomla.Administrator
  * @subpackage	com_banners
  * @since		1.6
  */

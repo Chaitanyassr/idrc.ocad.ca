@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View to edit a template style.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_templates
  * @since 1.6
  */
-class TemplatesViewSource extends JView
+class TemplatesViewSource extends JViewLegacy
 {
 	protected $form;
 	protected $ftp;
@@ -30,8 +26,6 @@ class TemplatesViewSource extends JView
 	 */
 	public function display($tpl = null)
 	{
-		jimport('joomla.client.helper');
-
 		// Initialise variables.
 		$this->form		= $this->get('Form');
 		$this->ftp		= JClientHelper::setCredentialsFromRequest('ftp');
@@ -65,11 +59,11 @@ class TemplatesViewSource extends JView
 
 		// Can save the item.
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::apply('source.apply','JTOOLBAR_APPLY');
-			JToolBarHelper::save('source.save', 'JTOOLBAR_SAVE');
+			JToolBarHelper::apply('source.apply');
+			JToolBarHelper::save('source.save');
 		}
 
-		JToolBarHelper::cancel('source.cancel','JTOOLBAR_CANCEL');
+		JToolBarHelper::cancel('source.cancel');
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_EXTENSIONS_TEMPLATE_MANAGER_TEMPLATES_EDIT_SOURCE');
 	}

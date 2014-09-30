@@ -1,21 +1,17 @@
 <?php
 /**
- * @version		$Id: none.php 20631 2011-02-09 19:21:47Z infograf768 $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
-
 /**
  * Plain Textarea Editor Plugin
  *
- * @package		Joomla
- * @subpackage	Editors
+ * @package		Joomla.Plugin
+ * @subpackage	Editors.none
  * @since		1.5
  */
 class plgEditorNone extends JPlugin

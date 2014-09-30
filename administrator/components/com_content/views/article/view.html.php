@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20801 2011-02-21 19:22:18Z dextercowley $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View to edit an article.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_content
  * @since		1.6
  */
-class ContentViewArticle extends JView
+class ContentViewArticle extends JViewLegacy
 {
 	protected $form;
 	protected $item;
@@ -74,29 +70,29 @@ class ContentViewArticle extends JView
 
 		// For new records, check the create permission.
 		if ($isNew && (count($user->getAuthorisedCategories('com_content', 'core.create')) > 0)) {
-			JToolBarHelper::apply('article.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('article.save', 'JTOOLBAR_SAVE');
-			JToolBarHelper::custom('article.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
-			JToolBarHelper::cancel('article.cancel', 'JTOOLBAR_CANCEL');
+			JToolBarHelper::apply('article.apply');
+			JToolBarHelper::save('article.save');
+			JToolBarHelper::save2new('article.save2new');
+			JToolBarHelper::cancel('article.cancel');
 		}
 		else {
 			// Can't save the record if it's checked out.
 			if (!$checkedOut) {
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
 				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId)) {
-					JToolBarHelper::apply('article.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save('article.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::apply('article.apply');
+					JToolBarHelper::save('article.save');
 
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create')) {
-						JToolBarHelper::custom('article.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						JToolBarHelper::save2new('article.save2new');
 					}
 				}
 			}
 
 			// If checked out, we can still save
 			if ($canDo->get('core.create')) {
-				JToolBarHelper::custom('article.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+				JToolBarHelper::save2copy('article.save2copy');
 			}
 
 			JToolBarHelper::cancel('article.cancel', 'JTOOLBAR_CLOSE');

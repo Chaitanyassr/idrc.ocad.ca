@@ -1,8 +1,7 @@
 <?php
 /**
- * @version		$Id: application.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -36,7 +35,7 @@ class JAdministrator extends JApplication
 		parent::__construct($config);
 
 		//Set the root in the URI based on the application name
-		JURI::root(null, str_replace('/'.$this->getName(), '', JURI::base(true)));
+		JURI::root(null, str_ireplace('/'.$this->getName(), '', JURI::base(true)));
 	}
 
 	/**
@@ -47,7 +46,7 @@ class JAdministrator extends JApplication
 	 * @return	void
 	 * @since	1.5
 	 */
-	function initialise($options = array())
+	public function initialise($options = array())
 	{
 		$config = JFactory::getConfig();
 
@@ -64,13 +63,13 @@ class JAdministrator extends JApplication
 			} else {
 				$params = JComponentHelper::getParams('com_languages');
 				$client	= JApplicationHelper::getClientInfo($this->getClientId());
-				$options['language'] = $params->get($client->name, $config->get('language','en-GB'));
+				$options['language'] = $params->get($client->name, $config->get('language', 'en-GB'));
 			}
 		}
 
 		// One last check to make sure we have something
 		if (!JLanguage::exists($options['language'])) {
-			$lang = $config->get('language','en-GB');
+			$lang = $config->get('language', 'en-GB');
 			if (JLanguage::exists($lang)) {
 				$options['language'] = $lang;
 			} else {
@@ -83,7 +82,7 @@ class JAdministrator extends JApplication
 
 		// Load Library language
 		$lang = JFactory::getLanguage();
-		$lang->load('lib_joomla', JPATH_ADMINISTRATOR);
+		$lang->load('lib_joomla', JPATH_ADMINISTRATOR, null, false, true);
 	}
 
 	/**
@@ -129,32 +128,41 @@ class JAdministrator extends JApplication
 	 */
 	public function dispatch($component = null)
 	{
-		if ($component === null) {
-			$component = JAdministratorHelper::findOption();
+		try
+		{
+			if ($component === null) {
+				$component = JAdministratorHelper::findOption();
+			}
+
+			$document	= JFactory::getDocument();
+			$user		= JFactory::getUser();
+
+			switch ($document->getType()) {
+				case 'html':
+					$document->setMetaData('keywords', $this->getCfg('MetaKeys'));
+					break;
+
+				default:
+					break;
+			}
+
+			$document->setTitle($this->getCfg('sitename'). ' - ' .JText::_('JADMINISTRATION'));
+			$document->setDescription($this->getCfg('MetaDesc'));
+			$document->setGenerator('Joomla! - Open Source Content Management');
+
+			$contents = JComponentHelper::renderComponent($component);
+			$document->setBuffer($contents, 'component');
+
+			// Trigger the onAfterDispatch event.
+			JPluginHelper::importPlugin('system');
+			$this->triggerEvent('onAfterDispatch');
 		}
-
-		$document	= JFactory::getDocument();
-		$user		= JFactory::getUser();
-
-		switch ($document->getType()) {
-			case 'html':
-				$document->setMetaData('keywords', $this->getCfg('MetaKeys'));
-				JHtml::_('behavior.framework', true);
-				break;
-
-			default:
-				break;
+		// Mop up any uncaught exceptions.
+		catch (Exception $e)
+		{
+			$code = $e->getCode();
+			JError::raiseError($code ? $code : 500, $e->getMessage());
 		}
-
-		$document->setTitle($this->getCfg('sitename'). ' - ' .JText::_('JADMINISTRATION'));
-		$document->setDescription($this->getCfg('MetaDesc'));
-
-		$contents = JComponentHelper::renderComponent($component);
-		$document->setBuffer($contents, 'component');
-
-		// Trigger the onAfterDispatch event.
-		JPluginHelper::importPlugin('system');
-		$this->triggerEvent('onAfterDispatch');
 	}
 
 	/**
@@ -178,7 +186,7 @@ class JAdministrator extends JApplication
 		$rootUser	= $config->get('root_user');
 		if (property_exists('JConfig', 'root_user') &&
 			(JFactory::getUser()->get('username') == $rootUser || JFactory::getUser()->id === (string) $rootUser)) {
-			JError::raiseNotice(200, JText::_('JWARNING_REMOVE_ROOT_USER'));
+			JError::raiseNotice(200, JText::sprintf('JWARNING_REMOVE_ROOT_USER', 'index.php?option=com_config&task=application.removeroot&'. JSession::getFormToken() .'=1'));
 		}
 
 		$params = array(
@@ -225,7 +233,7 @@ class JAdministrator extends JApplication
 
 		$result = parent::login($credentials, $options);
 
-		if (!JError::isError($result))
+		if (!($result instanceof Exception))
 		{
 			$lang = JRequest::getCmd('lang');
 			$lang = preg_replace('/[^A-Z-]/i', '', $lang);
@@ -253,24 +261,22 @@ class JAdministrator extends JApplication
 			// Load the template name from the database
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('template, params');
-			$query->from('#__template_styles');
-			$query->where('client_id = 1');
+			$query->select('template, s.params');
+			$query->from('#__template_styles as s');
+			$query->leftJoin('#__extensions as e ON e.type='.$db->quote('template').' AND e.element=s.template AND e.client_id=s.client_id');
 			if ($admin_style)
 			{
-				$query->where('id = '.(int)$admin_style);
+				$query->where('s.client_id = 1 AND id = '.(int)$admin_style. ' AND e.enabled = 1', 'OR');
 			}
-			else
-			{
-				$query->where('home = 1');
-			}
+			$query->where('s.client_id = 1 AND home = 1', 'OR');
+			$query->order('home');
 			$db->setQuery($query);
 			$template = $db->loadObject();
 
 			$template->template = JFilterInput::getInstance()->clean($template->template, 'cmd');
 			$template->params = new JRegistry($template->params);
 
-			if (!file_exists(JPATH_THEMES.DS.$template->template.DS.'index.php'))
+			if (!file_exists(JPATH_THEMES . '/' . $template->template . '/index.php'))
 			{
 				$template->params = new JRegistry();
 				$template->template = 'bluestork';
@@ -299,7 +305,7 @@ class JAdministrator extends JApplication
 		$query = 'SELECT *'
 		. ' FROM #__messages_cfg'
 		. ' WHERE user_id = ' . (int) $userid
-		. ' AND cfg_name = "auto_purge"'
+		. ' AND cfg_name = ' . $db->quote('auto_purge')
 		;
 		$db->setQuery($query);
 		$config = $db->loadObject();
@@ -317,14 +323,14 @@ class JAdministrator extends JApplication
 		if ($purge > 0) {
 			// purge old messages at day set in message configuration
 			$past = JFactory::getDate(time() - $purge * 86400);
-			$pastStamp = $past->toMySQL();
+			$pastStamp = $past->toSql();
 
 			$query = 'DELETE FROM #__messages'
 			. ' WHERE date_time < ' . $db->Quote($pastStamp)
 			. ' AND user_id_to = ' . (int) $userid
 			;
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 }

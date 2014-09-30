@@ -1,8 +1,7 @@
 <?php
 /**
- * @version		$Id: mod_weblinks.php 20806 2011-02-21 19:44:59Z dextercowley $
  * @package		Joomla.Site
- * @subpackage	mod_related_items
+ * @subpackage	mod_weblinks
  * @copyright	Copyright (C) 2005 - 2009 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -21,4 +20,4 @@ if (!count($list)) {
 
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
-require JModuleHelper::getLayoutPath('mod_weblinks',$params->get('layout', 'default'));
+require JModuleHelper::getLayoutPath('mod_weblinks', $params->get('layout', 'default'));

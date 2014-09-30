@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: blog_links.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,7 +19,7 @@ defined('_JEXEC') or die;
 	foreach ($this->link_items as &$item) :
 ?>
 	<li>
-		<a href="<?php echo JRoute::_(ContentHelperRoute::getArticleRoute($item->slug, $item->catid)); ?>">
+		<a href="<?php echo JRoute::_(ContentHelperRoute::getArticleRoute($item->slug, $item->catid, $item->language)); ?>">
 			<?php echo $item->title; ?></a>
 	</li>
 <?php endforeach; ?>

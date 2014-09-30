@@ -1,17 +1,17 @@
 <?php
 /**
- * @version		$Id: default_items.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
-JHtml::core();
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+JHtml::_('behavior.framework');
+
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 
 // Create a shortcut for params.
 $params = &$this->item->params;
@@ -21,7 +21,7 @@ $params = &$this->item->params;
 	<p> <?php echo JText::_('COM_CONTACT_NO_CONTACTS'); ?>	 </p>
 <?php else : ?>
 
-<form action="<?php echo JFilterOutput::ampReplace(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo htmlspecialchars(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
 	<fieldset class="filters">
 	<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
 	<?php if ($this->params->get('show_pagination_limit')) : ?>
@@ -30,6 +30,8 @@ $params = &$this->item->params;
 			<?php echo $this->pagination->getLimitBox(); ?>
 		</div>
 	<?php endif; ?>
+	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	</fieldset>
 
 	<table class="category">
@@ -39,7 +41,7 @@ $params = &$this->item->params;
 				<?php echo JText::_('JGLOBAL_NUM'); ?>
 			</th>
 			<th class="item-title">
-				<?php echo JHtml::_('grid.sort', 'COM_CONTACT_CONTACT_EMAIL_NAME', 'a.name', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('grid.sort', 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL', 'a.name', $listDirn, $listOrder); ?>
 			</th>
 			<?php if ($this->params->get('show_position_headings')) : ?>
 			<th class="item-position">
@@ -156,21 +158,5 @@ $params = &$this->item->params;
 		</tbody>
 	</table>
 
-	<?php if ($this->params->get('show_pagination')) : ?>
-	<div class="pagination">
-		<?php if ($this->params->def('show_pagination_results', 1)) : ?>
-		<p class="counter">
-			<?php echo $this->pagination->getPagesCounter(); ?>
-		</p>
-		<?php endif; ?>
-		<?php echo $this->pagination->getPagesLinks(); ?>
-	</div>
-	<?php endif; ?>
-	<div>
-		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-	</div>
 </form>
 <?php endif; ?>
-
-<div class="item-separator"></div>

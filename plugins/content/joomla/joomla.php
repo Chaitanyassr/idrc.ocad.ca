@@ -1,22 +1,16 @@
 <?php
 /**
- * @version		$Id: joomla.php 20541 2011-02-03 21:12:06Z dextercowley $
- * @package		Joomla
- * @subpackage	Content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.plugin.plugin');
 
 /**
  * Example Content Plugin
  *
- * @package		Joomla
- * @subpackage	Content
+ * @package		Joomla.Plugin
+ * @subpackage	Content.joomla
  * @since		1.6
  */
 class plgContentJoomla extends JPlugin
@@ -51,12 +45,12 @@ class plgContentJoomla extends JPlugin
 		$user = JFactory::getUser();
 
 		// Messaging for new items
-		JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_messages/models', 'MessagesModel');
+		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_messages/models', 'MessagesModel');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_messages/tables');
 
 		$db = JFactory::getDbo();
 		$db->setQuery('SELECT id FROM #__users WHERE sendEmail = 1');
-		$users = (array) $db->loadResultArray();
+		$users = (array) $db->loadColumn();
 
 		$default_language = JComponentHelper::getParams('com_languages')->get('administrator');
 		$debug = JFactory::getConfig()->get('debug_lang');
@@ -73,7 +67,7 @@ class plgContentJoomla extends JPlugin
 					'subject'		=> $lang->_('COM_CONTENT_NEW_ARTICLE'),
 					'message'		=> sprintf($lang->_('COM_CONTENT_ON_NEW_CONTENT'), $user->get('name'), $article->title)
 				);
-				$model_message = JModel::getInstance('Message', 'MessagesModel');
+				$model_message = JModelLegacy::getInstance('Message', 'MessagesModel');
 				$model_message->save($message);
 			}
 		}

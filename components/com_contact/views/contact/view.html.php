@@ -1,16 +1,13 @@
 <?php
 /**
- * @version		$Id: view.html.php 20523 2011-02-03 01:26:20Z dextercowley $
  * @package		Joomla.Site
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.view');
 require_once JPATH_COMPONENT.'/models/category.php';
 
 /**
@@ -20,10 +17,12 @@ require_once JPATH_COMPONENT.'/models/category.php';
  * @subpackage	com_contact
  * @since 		1.5
  */
-class ContactViewContact extends JView
+class ContactViewContact extends JViewLegacy
 {
 	protected $state;
+	protected $form;
 	protected $item;
+	protected $return_page;
 
 	function display($tpl = null)
 	{
@@ -33,13 +32,22 @@ class ContactViewContact extends JView
 		$dispatcher = JDispatcher::getInstance();
 		$state		= $this->get('State');
 		$item		= $this->get('Item');
+		$this->form	= $this->get('Form');
 
-		// Get Category Model data
+		// Get the parameters
+		$params = JComponentHelper::getParams('com_contact');
+
 		if ($item) {
-			$categoryModel = JModel::getInstance('Category', 'ContactModel', array('ignore_request' => true));
+			// If we found an item, merge the item parameters
+			$params->merge($item->params);
+
+			// Get Category Model data
+			$categoryModel = JModelLegacy::getInstance('Category', 'ContactModel', array('ignore_request' => true));
 			$categoryModel->setState('category.id', $item->catid);
 			$categoryModel->setState('list.ordering', 'a.name');
 			$categoryModel->setState('list.direction', 'asc');
+			$categoryModel->setState('filter.published', 1);
+
 			$contacts = $categoryModel->getItems();
 		}
 
@@ -49,13 +57,6 @@ class ContactViewContact extends JView
 
 			return false;
 		}
-
-		// Get the parameters of the active menu item
-		$menus	= $app->getMenu();
-		$menu	= $menus->getActive();
-		$params	= $app->getParams();
-
-		$params->merge($item->params);
 
 		// check if access is not public
 		$groups	= $user->getAuthorisedViewLevels();
@@ -78,8 +79,7 @@ class ContactViewContact extends JView
 		if ($item->email_to && $params->get('show_email')) {
 			$item->email_to = JHtml::_('email.cloak', $item->email_to);
 		}
-
-		if ($params->get('show_street_address') || $params->get('show_suburb') || $params->get('show_state') || $params->get('show_postcode') || $params->get('show_country')) {
+			if ($params->get('show_street_address') || $params->get('show_suburb') || $params->get('show_state') || $params->get('show_postcode') || $params->get('show_country')) {
 			if (!empty ($item->address) || !empty ($item->suburb) || !empty ($item->state) || !empty ($item->country) || !empty ($item->postcode)) {
 				$params->set('address_check', 1);
 			}
@@ -87,6 +87,7 @@ class ContactViewContact extends JView
 		else {
 			$params->set('address_check', 0);
 		}
+
 
 		// Manage the display mode for contact detail groups
 		switch ($params->get('contact_icons'))
@@ -115,12 +116,12 @@ class ContactViewContact extends JView
 
 			default :
 				// icons
-				$image1 = JHTML::_('image','contacts/'.$params->get('icon_address','con_address.png'), JText::_('COM_CONTACT_ADDRESS').": ", NULL, true);
-				$image2 = JHTML::_('image','contacts/'.$params->get('icon_email','emailButton.png'), JText::_('JGLOBAL_EMAIL').": ", NULL, true);
-				$image3 = JHTML::_('image','contacts/'.$params->get('icon_telephone','con_tel.png'), JText::_('COM_CONTACT_TELEPHONE').": ", NULL, true);
-				$image4 = JHTML::_('image','contacts/'.$params->get('icon_fax','con_fax.png'), JText::_('COM_CONTACT_FAX').": ", NULL, true);
-				$image5 = JHTML::_('image','contacts/'.$params->get('icon_misc','con_info.png'), JText::_('COM_CONTACT_OTHER_INFORMATION').": ", NULL, true);
-				$image6 = JHTML::_('image','contacts/'.$params->get('icon_mobile','con_mobile.png'), JText::_('COM_CONTACT_MOBILE').": ", NULL, true);
+				$image1 = JHtml::_('image', 'contacts/'.$params->get('icon_address', 'con_address.png'), JText::_('COM_CONTACT_ADDRESS').": ", NULL, true);
+				$image2 = JHtml::_('image', 'contacts/'.$params->get('icon_email', 'emailButton.png'), JText::_('JGLOBAL_EMAIL').": ", NULL, true);
+				$image3 = JHtml::_('image', 'contacts/'.$params->get('icon_telephone', 'con_tel.png'), JText::_('COM_CONTACT_TELEPHONE').": ", NULL, true);
+				$image4 = JHtml::_('image', 'contacts/'.$params->get('icon_fax', 'con_fax.png'), JText::_('COM_CONTACT_FAX').": ", NULL, true);
+				$image5 = JHtml::_('image', 'contacts/'.$params->get('icon_misc', 'con_info.png'), JText::_('COM_CONTACT_OTHER_INFORMATION').": ", NULL, true);
+				$image6 = JHtml::_('image', 'contacts/'.$params->get('icon_mobile', 'con_mobile.png'), JText::_('COM_CONTACT_MOBILE').": ", NULL, true);
 
 				$params->set('marker_address',	$image1);
 				$params->set('marker_email',		$image2);
@@ -140,8 +141,6 @@ class ContactViewContact extends JView
 			}
 			$item->link = JRoute::_(ContactHelperRoute::getContactRoute($item->slug, $item->catid));
 		}
-
-		JHtml::_('behavior.formvalidation');
 
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
@@ -192,15 +191,15 @@ class ContactViewContact extends JView
 		else {
 			$this->params->def('page_heading', JText::_('COM_CONTACT_DEFAULT_PAGE_TITLE'));
 		}
-		
+
 		$title = $this->params->get('page_title', '');
-		
+
 		$id = (int) @$menu->query['id'];
 
 		// if the menu item does not concern this contact
-		if ($menu && ($menu->query['option'] != 'com_contact' || $menu->query['view'] != 'contact' || $id != $this->item->id)) 
+		if ($menu && ($menu->query['option'] != 'com_contact' || $menu->query['view'] != 'contact' || $id != $this->item->id))
 		{
-			
+
 			// If this is not a single contact menu item, set the page title to the contact title
 			if ($this->item->name) {
 				$title = $this->item->name;
@@ -225,20 +224,23 @@ class ContactViewContact extends JView
 		if (empty($title)) {
 			$title = $app->getCfg('sitename');
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0)) {
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
 			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+		}
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
+			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
 
 		if (empty($title)) {
 			$title = $this->item->name;
 		}
-		$this->document->setTitle($title);		
+		$this->document->setTitle($title);
 
 		if ($this->item->metadesc)
 		{
 			$this->document->setDescription($this->item->metadesc);
 		}
-		elseif (!$this->item->metadesc && $this->params->get('menu-meta_description')) 
+		elseif (!$this->item->metadesc && $this->params->get('menu-meta_description'))
 		{
 			$this->document->setDescription($this->params->get('menu-meta_description'));
 		}
@@ -247,13 +249,14 @@ class ContactViewContact extends JView
 		{
 			$this->document->setMetadata('keywords', $this->item->metakey);
 		}
-		elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords')) 
+		elseif (!$this->item->metakey && $this->params->get('menu-meta_keywords'))
 		{
 			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
 		}
 
-		if ($app->getCfg('MetaTitle') == '1') {
-			$this->document->setMetaData('title', $this->item->name);
+		if ($this->params->get('robots'))
+		{
+			$this->document->setMetadata('robots', $this->params->get('robots'));
 		}
 
 		$mdata = $this->item->metadata->toArray();

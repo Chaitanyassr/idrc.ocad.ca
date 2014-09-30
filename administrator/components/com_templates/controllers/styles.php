@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: styles.php 20231 2011-01-10 01:46:33Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -25,7 +24,7 @@ class TemplatesControllerStyles extends JControllerAdmin
 	public function duplicate()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$pks = JRequest::getVar('cid', array(), 'post', 'array');
@@ -51,24 +50,6 @@ class TemplatesControllerStyles extends JControllerAdmin
 	}
 
 	/**
-	 * Proxy for execute.
-	 *
-	 * If the task is an action which modifies data, the component cache is cleared.
-	 *
-	 * @since	1.6
- 	 */
-	public function execute($task)
-	{
-		parent::execute($task);
-
-		// Clear the component's cache
-		if ($task != 'display') {
-			$cache = JFactory::getCache('com_templates');
-			$cache->clean();
-		}
-	}
-
-	/**
 	 * Proxy for getModel.
 	 *
 	 * @since	1.6
@@ -87,7 +68,7 @@ class TemplatesControllerStyles extends JControllerAdmin
 	public function setDefault()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$pks = JRequest::getVar('cid', array(), 'post', 'array');
@@ -122,7 +103,7 @@ class TemplatesControllerStyles extends JControllerAdmin
 	public function unsetDefault()
 	{
 		// Check for request forgeries
-		JRequest::checkToken('default') or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$pks = JRequest::getVar('cid', array(), 'get', 'array');

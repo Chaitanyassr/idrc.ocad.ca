@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!-- $Id: frontend.xml 17800 2010-06-21 06:00:18Z chdemko $ -->
 <form>
 	<fields name="params">
 		<!--  Basic user account settings. -->
 		<fieldset name="params" label="COM_USERS_SETTINGS_FIELDSET_LABEL">
 
-			<field name="editor" type="editors"
+			<field name="editor" type="plugins" folder="editors"
 				description="COM_USERS_USER_FIELD_EDITOR_DESC"
 				label="COM_USERS_USER_FIELD_EDITOR_LABEL"
 			>
@@ -23,6 +22,7 @@
 				client="site"
 				description="COM_USERS_USER_FIELD_FRONTEND_LANGUAGE_DESC"
 				label="COM_USERS_USER_FIELD_FRONTEND_LANGUAGE_LABEL"
+				filter="cmd"
 			>
 				<option value="">JOPTION_USE_DEFAULT</option>
 			</field>

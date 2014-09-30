@@ -1,13 +1,10 @@
 <?php
 /**
- * @version		$Id: newsfeeds.php 20804 2011-02-21 19:38:29Z dextercowley $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
-
-jimport('joomla.form.formfield');
 
 /**
  * Supports a modal newsfeeds picker.
@@ -52,8 +49,8 @@ class JFormFieldModal_Newsfeeds extends JFormField
 		// Build the script.
 		$script = array();
 		$script[] = '	window.addEvent("domready", function() {';
-		$script[] = '		var div = new Element("div").setStyle("display", "none").injectBefore(document.id("menu-types"));';
-		$script[] = '		document.id("menu-types").injectInside(div);';
+		$script[] = '		var div = new Element("div").setStyle("display", "none").inject(document.id("menu-types"), "before");';
+		$script[] = '		document.id("menu-types").inject(div, "bottom");';
 		$script[] = '	});';
 
 		// Add the script to the document head.
@@ -79,7 +76,7 @@ class JFormFieldModal_Newsfeeds extends JFormField
 
 		$link = 'index.php?option=com_newsfeeds&amp;view=newsfeeds&amp;layout=modal&amp;tmpl=component&amp;function=jSelectChart_'.$this->id;
 
-		JHTML::_('behavior.modal', 'a.modal');
+		JHtml::_('behavior.modal', 'a.modal');
 		$html = "\n".'<div class="fltlft"><input type="text" id="'.$this->id.'_name" value="'.htmlspecialchars($title, ENT_QUOTES, 'UTF-8').'" disabled="disabled" /></div>';
 		$html .= '<div class="button2-left"><div class="blank"><a class="modal" title="'.JText::_('COM_NEWSFEEDS_CHANGE_FEED_BUTTON').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'.JText::_('COM_NEWSFEEDS_CHANGE_FEED_BUTTON').'</a></div></div>'."\n";
 		// The active newsfeed id field.

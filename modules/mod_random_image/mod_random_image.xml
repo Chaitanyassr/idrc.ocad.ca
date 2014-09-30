@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension
 	type="module"
-	version="1.6.0"
+	version="2.5"
 	client="site"
 	method="upgrade">
 	<name>mod_random_image</name>
 	<author>Joomla! Project</author>
 	<creationDate>July 2006</creationDate>
-	<copyright>Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
-	<version>1.6.0</version>
+	<version>2.5.0</version>
 	<description>MOD_RANDOM_IMAGE_XML_DESCRIPTION</description>
 	<files>
-		<filename
-			module="mod_random_image">mod_random_image.php</filename>
+		<filename module="mod_random_image">mod_random_image.php</filename>
 		<folder>tmpl</folder>
 		<filename>helper.php</filename>
 		<filename>index.html</filename>		<filename>mod_random_image.xml</filename>
 	</files>
 	<languages>
-		<language
-			tag="en-GB">en-GB.mod_random_image.ini</language>
+		<language tag="en-GB">en-GB.mod_random_image.ini</language>
+		<language tag="en-GB">en-GB.mod_random_image.sys.ini</language>
 	</languages>
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_RANDOM_IMAGE" />
 	<config>

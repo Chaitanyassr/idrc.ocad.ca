@@ -1,17 +1,16 @@
 <?php
 /**
- * @version		$Id: default.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_cache
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_cache'); ?>" method="post" name="adminForm" id="adminForm">
@@ -30,7 +29,7 @@ $listDirn	= $this->state->get('list.direction');
 				<?php echo JText::_('COM_CACHE_NUM'); ?>
 			</th>
 			<th width="20">
-				<input type="checkbox" name="checkall-toggle" value="" onclick="checkAll(this)" />
+				<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)" />
 			</th>
 			<th class="title nowrap">
 				<?php echo JHtml::_('grid.sort',  'COM_CACHE_GROUP', 'group', $listDirn, $listOrder); ?>
@@ -59,7 +58,7 @@ $listDirn	= $this->state->get('list.direction');
 				<?php echo $this->pagination->getRowOffset($i); ?>
 			</td>
 			<td>
-				<input type="checkbox" id="cb<?php echo $i;?>" name="cid[]" value="<?php echo $item->group; ?>" onclick="isChecked(this.checked);" />
+				<input type="checkbox" id="cb<?php echo $i;?>" name="cid[]" value="<?php echo $item->group; ?>" onclick="Joomla.isChecked(this.checked);" />
 			</td>
 			<td>
 				<strong><?php echo $item->group; ?></strong>
@@ -68,7 +67,7 @@ $listDirn	= $this->state->get('list.direction');
 				<?php echo $item->count; ?>
 			</td>
 			<td class="center">
-				<?php echo $item->size ?>
+				<?php echo JHtml::_('number.bytes', $item->size*1024); ?>
 			</td>
 		</tr>
 		<?php $i++; endforeach; ?>

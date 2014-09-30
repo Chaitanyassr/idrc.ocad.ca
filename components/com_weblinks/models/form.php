@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: form.php 20250 2011-01-10 14:27:02Z chdemko $
  * @package		Joomla.Site
  * @subpackage	com_weblinks
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -53,6 +52,11 @@ class WeblinksModelForm extends WeblinksModelWeblink
 		$this->setState('weblink.catid', $categoryId);
 
 		$return = JRequest::getVar('return', null, 'default', 'base64');
+
+		if (!JUri::isInternal(base64_decode($return))) {
+			$return = null;
+		}
+
 		$this->setState('return_page', base64_decode($return));
 
 		// Load the parameters.

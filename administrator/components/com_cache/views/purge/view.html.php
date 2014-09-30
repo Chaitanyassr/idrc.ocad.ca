@@ -1,26 +1,22 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_cache
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Cache component
  *
  * @static
  * @package		Joomla.Administrator
- * @subpackage	Cache
+ * @subpackage	com_cache
  * @since 1.6
  */
-class CacheViewPurge extends JView
+class CacheViewPurge extends JViewLegacy
 {
 	public function display($tpl = null)
 	{

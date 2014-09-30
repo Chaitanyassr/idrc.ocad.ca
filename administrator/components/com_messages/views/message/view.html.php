@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport( 'joomla.application.component.view');
 
 /**
  * HTML View class for the Messages component
@@ -17,7 +13,7 @@ jimport( 'joomla.application.component.view');
  * @subpackage	com_messages
  * @since		1.6
  */
-class MessagesViewMessage extends JView
+class MessagesViewMessage extends JViewLegacy
 {
 	protected $form;
 	protected $item;
@@ -49,12 +45,12 @@ class MessagesViewMessage extends JView
 		if ($this->getLayout() == 'edit') {
 			JToolBarHelper::title(JText::_('COM_MESSAGES_WRITE_PRIVATE_MESSAGE'), 'new-privatemessage.png');
 			JToolBarHelper::save('message.save', 'COM_MESSAGES_TOOLBAR_SEND');
-			JToolBarHelper::cancel('message.cancel','JTOOLBAR_CANCEL');
+			JToolBarHelper::cancel('message.cancel');
 			JToolBarHelper::help('JHELP_COMPONENTS_MESSAGING_WRITE');
 		} else {
 			JToolBarHelper::title(JText::_('COM_MESSAGES_VIEW_PRIVATE_MESSAGE'), 'inbox.png');
 			$sender = JUser::getInstance($this->item->user_id_from);
-			if ($sender->authorise('core.admin') || $sender->authorise('core.manage','com_messages') && $sender->authorise('core.login.admin')) {
+			if ($sender->authorise('core.admin') || $sender->authorise('core.manage', 'com_messages') && $sender->authorise('core.login.admin')) {
 				JToolBarHelper::custom('message.reply', 'restore.png', 'restore_f2.png', 'COM_MESSAGES_TOOLBAR_REPLY', false);
 			}
 			JToolBarHelper::cancel('message.cancel');

@@ -1,25 +1,21 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Templates
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_templates
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Templates component
  *
  * @package		Joomla.Administrator
- * @subpackage	Templates
+ * @subpackage	com_templates
  * @since		1.6
  */
-class TemplatesViewPrevuuw extends JView
+class TemplatesViewPrevuuw extends JViewLegacy
 {
 	protected $client;
 	protected $id;
@@ -49,7 +45,6 @@ class TemplatesViewPrevuuw extends JView
 		}
 
 		// Set FTP credentials, if given
-		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
 
 		parent::display($tpl);

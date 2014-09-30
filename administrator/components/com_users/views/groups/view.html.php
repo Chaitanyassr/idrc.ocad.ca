@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of user groups.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_users
  * @since		1.6
  */
-class UsersViewGroups extends JView
+class UsersViewGroups extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -54,14 +50,14 @@ class UsersViewGroups extends JView
 		JToolBarHelper::title(JText::_('COM_USERS_VIEW_GROUPS_TITLE'), 'groups');
 
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::custom('group.add', 'new.png', 'new_f2.png', 'JTOOLBAR_NEW', false);
+			JToolBarHelper::addNew('group.add');
 		}
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::custom('group.edit', 'edit.png', 'edit_f2.png','JTOOLBAR_EDIT', true);
+			JToolBarHelper::editList('group.edit');
 			JToolBarHelper::divider();
 		}
 		if ($canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'groups.delete','JTOOLBAR_DELETE');
+			JToolBarHelper::deleteList('', 'groups.delete');
 			JToolBarHelper::divider();
 		}
 

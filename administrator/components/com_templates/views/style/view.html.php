@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View to edit a template style.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_templates
  * @since		1.6
  */
-class TemplatesViewStyle extends JView
+class TemplatesViewStyle extends JViewLegacy
 {
 	protected $item;
 	protected $form;
@@ -62,17 +58,17 @@ class TemplatesViewStyle extends JView
 
 		// If not checked out, can save the item.
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::apply('style.apply','JTOOLBAR_APPLY');
-			JToolBarHelper::save('style.save','JTOOLBAR_SAVE');
+			JToolBarHelper::apply('style.apply');
+			JToolBarHelper::save('style.save');
 		}
 
 		// If an existing item, can save to a copy.
 		if (!$isNew && $canDo->get('core.create')) {
-			JToolBarHelper::custom('style.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+			JToolBarHelper::save2copy('style.save2copy');
 		}
 
 		if (empty($this->item->id))  {
-			JToolBarHelper::cancel('style.cancel','JTOOLBAR_CANCEL');
+			JToolBarHelper::cancel('style.cancel');
 		} else {
 			JToolBarHelper::cancel('style.cancel', 'JTOOLBAR_CLOSE');
 		}

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!-- $Id: banner.xml 20740 2011-02-17 10:28:57Z infograf768 $ -->
 <form>
 	<fieldset name="details"
 		addfieldpath="/administrator/components/com_banners/models/fields"
 	>
-		<field name="id" type="text" default="0" 
+		<field name="id" type="text" default="0"
 			readonly="true" class="readonly"
 			label="JGLOBAL_FIELD_ID_LABEL" 	description ="JGLOBAL_FIELD_ID_DESC" />
 
@@ -16,13 +15,15 @@
 			size="40" label="JFIELD_ALIAS_LABEL"
 			description="COM_BANNERS_FIELD_ALIAS_DESC" />
 
-		<field name="catid" type="category" extension="com_banners"
+		<field name="catid" type="categoryedit" extension="com_banners"
 			label="JCATEGORY" description="COM_BANNERS_FIELD_CATEGORY_DESC"
 			class="inputbox" required="true"
+			addfieldpath="/administrator/components/com_categories/models/fields"
+	>
 		>
 		</field>
 		<field name="state" type="list"
-			label="JGLOBAL_STATE" description="COM_BANNERS_FIELD_STATE_DESC"
+			label="JSTATUS" description="COM_BANNERS_FIELD_STATE_DESC"
 			class="inputbox" size="1" default="1" >
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
@@ -58,7 +59,7 @@
 			rows="3" cols="30" filter="raw"
 			label="COM_BANNERS_FIELD_CUSTOMCODE_LABEL" description="COM_BANNERS_FIELD_CUSTOMCODE_DESC" />
 
-		<field name="clickurl" type="url" class="inputbox"
+		<field name="clickurl" type="url" class="inputbox" filter="url"
 				label="COM_BANNERS_FIELD_CLICKURL_LABEL" description="COM_BANNERS_FIELD_CLICKURL_DESC" />
 
 	</fieldset>

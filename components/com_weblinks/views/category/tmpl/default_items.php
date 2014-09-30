@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default_items.php 13471 2009-11-12 00:38:49Z eddieajau
  * @package		Joomla.Site
  * @subpackage	com_weblinks
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,7 +13,8 @@ defined('_JEXEC') or die;
 $params = &$this->item->params;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
-JHtml::core();
+JHtml::_('behavior.framework');
+
 // Get the user object.
 $user = JFactory::getUser();
 // Check if user is allowed to add/edit based on weblinks permissinos.
@@ -23,15 +23,15 @@ $canCreate = $user->authorise('core.create', 'com_weblinks');
 $canEditState = $user->authorise('core.edit.state', 'com_weblinks');
 
 $n = count($this->items);
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 
 <?php if (empty($this->items)) : ?>
 	<p> <?php echo JText::_('COM_WEBLINKS_NO_WEBLINKS'); ?></p>
 <?php else : ?>
 
-<form action="<?php echo JFilterOutput::ampReplace(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo htmlspecialchars(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
 	<?php if ($this->params->get('show_pagination_limit')) : ?>
 		<fieldset class="filters">
 		<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
@@ -39,6 +39,8 @@ $listDirn	= $this->state->get('list.direction');
 			<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>&#160;
 			<?php echo $this->pagination->getLimitBox(); ?>
 		</div>
+		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 		</fieldset>
 	<?php endif; ?>
 
@@ -68,12 +70,12 @@ $listDirn	= $this->state->get('list.direction');
 
 			<td class="title">
 			<p>
-				<?php if ($this->params->get('icons') != 1) : ?>
+				<?php if ($this->params->get('icons') == 0) : ?>
 					 <?php echo JText::_('COM_WEBLINKS_LINK'); ?>
-				<?php else: ?>
+				<?php elseif ($this->params->get('icons') == 1) : ?>
 					<?php if (!$this->params->get('link_icons')) : ?>
-						<?php echo JHTML::_('image','system/'.$this->params->get('link_icons', 'weblink.png'), JText::_('COM_WEBLINKS_LINK'), NULL, true); ?>
-					<?php else: ?> 
+						<?php echo JHtml::_('image', 'system/'.$this->params->get('link_icons', 'weblink.png'), JText::_('COM_WEBLINKS_LINK'), NULL, true); ?>
+					<?php else: ?>
 						<?php echo '<img src="'.$this->params->get('link_icons').'" alt="'.JText::_('COM_WEBLINKS_LINK').'" />'; ?>
 					<?php endif; ?>
 				<?php endif; ?>
@@ -121,16 +123,14 @@ $listDirn	= $this->state->get('list.direction');
 						<?php if ($canEdit) : ?>
 							<ul class="actions">
 								<li class="edit-icon">
-									<?php echo JHtml::_('icon.edit',$item, $params); ?>
+									<?php echo JHtml::_('icon.edit', $item, $params); ?>
 								</li>
 							</ul>
 						<?php endif; ?>
 			</p>
 
-			<?php if (($this->params->get('show_link_description')) AND ($item->description !='')): ?>
-				<p>
-				<?php echo nl2br($item->description); ?>
-				</p>
+			<?php if (($this->params->get('show_link_description')) and ($item->description !='')): ?>
+				<?php echo $item->description; ?>
 			<?php endif; ?>
 		</td>
 		<?php if ($this->params->get('show_link_hits')) : ?>
@@ -157,9 +157,5 @@ $listDirn	= $this->state->get('list.direction');
 				<?php echo $this->pagination->getPagesLinks(); ?>
 			</div>
 		<?php endif; ?>
-		<div>
-			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-		</div>
 	</form>
 <?php endif; ?>

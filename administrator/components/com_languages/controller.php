@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Languages Controller
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_languages
  * @since		1.5
  */
-class LanguagesController extends JController
+class LanguagesController extends JControllerLegacy
 {
 	/**
 	 * @var		string	The default view.
@@ -42,7 +38,8 @@ class LanguagesController extends JController
 		LanguagesHelper::addSubmenu(JRequest::getCmd('view', 'installed'));
 
 		$view	= JRequest::getCmd('view', 'languages');
-		$layout = JRequest::getCmd('layout', 'default');
+		$layout	= JRequest::getCmd('layout', 'default');
+		$client	= JRequest::getInt('client');
 		$id		= JRequest::getInt('id');
 
 		// Check for edit form.

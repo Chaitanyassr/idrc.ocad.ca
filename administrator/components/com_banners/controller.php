@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Banners master display controller.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_banners
  * @since		1.6
  */
-class BannersController extends JController
+class BannersController extends JControllerLegacy
 {
 	/**
 	 * Method to display a view.
@@ -50,7 +46,7 @@ class BannersController extends JController
 
 			return false;
 		}
-		else if ($view == 'client' && $layout == 'edit' && !$this->checkEditId('com_banners.edit.client', $id)) {
+		elseif ($view == 'client' && $layout == 'edit' && !$this->checkEditId('com_banners.edit.client', $id)) {
 
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));

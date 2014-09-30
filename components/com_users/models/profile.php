@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: profile.php 20228 2011-01-10 00:52:54Z eddieajau $
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +10,6 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modelform');
 jimport('joomla.event.dispatcher');
-jimport('joomla.plugin.helper');
 
 /**
  * Profile model class for Users.
@@ -154,6 +152,29 @@ class UsersModelProfile extends JModelForm
 			return false;
 		}
 
+		// Check for username compliance and parameter set
+		$isUsernameCompliant = true;
+
+		if ($this->loadFormData()->username)
+		{
+			$username = $this->loadFormData()->username;
+			$isUsernameCompliant  = !(preg_match('#[<>"\'%;()&\\\\]|\\.\\./#', $username) || strlen(utf8_decode($username)) < 2
+				|| trim($username) != $username);
+		}
+
+		$this->setState('user.username.compliant', $isUsernameCompliant);
+
+		if (!JComponentHelper::getParams('com_users')->get('change_login_name') && $isUsernameCompliant)
+		{
+			$form->setFieldAttribute('username', 'class', '');
+			$form->setFieldAttribute('username', 'filter', '');
+			$form->setFieldAttribute('username', 'description', 'COM_USERS_PROFILE_NOCHANGE_USERNAME_DESC');
+			$form->setFieldAttribute('username', 'validate', '');
+			$form->setFieldAttribute('username', 'message', '');
+			$form->setFieldAttribute('username', 'readonly', 'true');
+			$form->setFieldAttribute('username', 'required', 'false');
+		}
+
 		return $form;
 	}
 
@@ -180,9 +201,9 @@ class UsersModelProfile extends JModelForm
 	{
 		if (JComponentHelper::getParams('com_users')->get('frontend_userparams'))
 		{
-			$form->loadFile('frontend',false);
+			$form->loadFile('frontend', false);
 			if (JFactory::getUser()->authorise('core.login.admin')) {
-				$form->loadFile('frontend_admin',false);
+				$form->loadFile('frontend_admin', false);
 			}
 		}
 		parent::preprocessForm($form, $data, $group);
@@ -228,6 +249,15 @@ class UsersModelProfile extends JModelForm
 		$data['email']		= $data['email1'];
 		$data['password']	= $data['password1'];
 
+		// Unset the username if it should not be overwritten
+		$username = $data['username'];
+		$isUsernameCompliant = $this->getState('user.username.compliant');
+
+		if (!JComponentHelper::getParams('com_users')->get('change_login_name') && $isUsernameCompliant)
+		{
+			unset($data['username']);
+		}
+
 		// Unset the block so it does not get overwritten
 		unset($data['block']);
 
@@ -236,7 +266,7 @@ class UsersModelProfile extends JModelForm
 
 		// Bind the data.
 		if (!$user->bind($data)) {
-			$this->setError(JText::sprintf('USERS PROFILE BIND FAILED', $user->getError()));
+			$this->setError(JText::sprintf('COM_USERS_PROFILE_BIND_FAILED', $user->getError()));
 			return false;
 		}
 

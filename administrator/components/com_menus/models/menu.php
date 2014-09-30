@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: menu.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -116,7 +115,7 @@ class MenusModelMenu extends JModelForm
 
 		// Check for a table object error.
 		if ($return === false && $table->getError()) {
-			$this->serError($table->getError());
+			$this->setError($table->getError());
 			return $false;
 		}
 
@@ -202,10 +201,8 @@ class MenusModelMenu extends JModelForm
 
 		$this->setState('menu.id', $table->id);
 
-		// Clear the component's cache
-		$cache = JFactory::getCache('com_modules');
-		$cache->clean();
-		$cache->clean('mod_menu');
+		// Clean the cache
+		$this->cleanCache();
 
 		return true;
 	}
@@ -236,10 +233,8 @@ class MenusModelMenu extends JModelForm
 			}
 		}
 
-		// Clear the component's cache
-		$cache = JFactory::getCache('com_modules');
-		$cache->clean();
-		$cache->clean('mod_menu');
+		// Clean the cache
+		$this->cleanCache();
 
 		return true;
 	}
@@ -267,7 +262,7 @@ class MenusModelMenu extends JModelForm
 
 		foreach ($modules as &$module) {
 			$params = new JRegistry;
-			$params->loadJSON($module->params);
+			$params->loadString($module->params);
 
 			$menuType = $params->get('menutype');
 			if (!isset($result[$menuType])) {
@@ -277,5 +272,15 @@ class MenusModelMenu extends JModelForm
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Custom clean cache method
+	 *
+	 * @since	1.6
+	 */
+	protected function cleanCache($group = null, $client_id = 0) {
+		parent::cleanCache('com_modules');
+		parent::cleanCache('mod_menu');
 	}
 }

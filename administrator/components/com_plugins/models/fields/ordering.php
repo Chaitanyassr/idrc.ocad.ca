@@ -1,22 +1,18 @@
 <?php
 /**
- * @version		$Id$
- * @package		Joomla.Framework
- * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Administrator
+ * @subpackage	com_plugins
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.html.html');
-jimport('joomla.form.formfield');
-
 /**
  * Supports an HTML select list of plugins
  *
  * @package		Joomla.Administrator
- * @subpackage	com_newsfeeds
+ * @subpackage	com_plugins
  * @since		1.6
  */
 class JFormFieldOrdering extends JFormField

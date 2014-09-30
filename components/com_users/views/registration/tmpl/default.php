@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -19,12 +18,13 @@ JHtml::_('behavior.formvalidation');
 	<h1><?php echo $this->escape($this->params->get('page_heading')); ?></h1>
 <?php endif; ?>
 
-	<form id="member-registration" action="<?php echo JRoute::_('index.php?option=com_users&task=registration.register'); ?>" method="post" class="form-validate">
+	<form id="member-registration" action="<?php echo JRoute::_('index.php?option=com_users&task=registration.register'); ?>" method="post" class="form-validate" enctype="multipart/form-data">
 <?php foreach ($this->form->getFieldsets() as $fieldset): // Iterate through the form fieldsets and display each one.?>
 	<?php $fields = $this->form->getFieldset($fieldset->name);?>
 	<?php if (count($fields)):?>
 		<fieldset>
-		<?php if (isset($fieldset->label)):// If the fieldset has a label set, display it as the legend.?>
+		<?php if (isset($fieldset->label)):// If the fieldset has a label set, display it as the legend.
+		?>
 			<legend><?php echo JText::_($fieldset->label);?></legend>
 		<?php endif;?>
 			<dl>
@@ -33,12 +33,12 @@ JHtml::_('behavior.formvalidation');
 				<?php echo $field->input;?>
 			<?php else:?>
 				<dt>
-				<?php echo $field->label; ?>
-				<?php if (!$field->required && (!$field->type == "spacer")): ?>
-					<span class="optional"><?php echo JText::_('COM_USERS_OPTIONAL');?></span>
-				<?php endif; ?>
+					<?php echo $field->label; ?>
+					<?php if (!$field->required && $field->type!='Spacer'): ?>
+						<span class="optional"><?php echo JText::_('COM_USERS_OPTIONAL'); ?></span>
+					<?php endif; ?>
 				</dt>
-				<dd><?php echo $field->input;?></dd>
+				<dd><?php echo ($field->type!='Spacer') ? $field->input : "&#160;"; ?></dd>
 			<?php endif;?>
 		<?php endforeach;?>
 			</dl>

@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: cache.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_cache
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -16,7 +15,7 @@ jimport('joomla.application.component.modellist');
  * Cache Model
  *
  * @package		Joomla.Administrator
- * @subpackage	Cache
+ * @subpackage	com_cache
  * @since		1.6
  */
 class CacheModelCache extends JModelList
@@ -52,7 +51,7 @@ class CacheModelCache extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication();
-		
+
 		$clientId = $this->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', 0, 'int');
 		$this->setState('clientId', $clientId == 1 ? 1 : 0);
 
@@ -76,7 +75,7 @@ class CacheModelCache extends JModelList
 
 			if ($data != false) {
 				$this->_data = $data;
-				$this->_total = sizeof($data);
+				$this->_total = count($data);
 
 				if ($this->_total) {
 					// Apply custom ordering
@@ -113,15 +112,11 @@ class CacheModelCache extends JModelList
 			'defaultgroup'	=> '',
 			'storage' 		=> $conf->get('cache_handler', ''),
 			'caching'		=> true,
-			'cachebase'		=> ($this->getState('clientId') == 1) ? JPATH_ADMINISTRATOR.DS.'cache' : $conf->get('cache_path', JPATH_SITE.DS.'cache')
+			'cachebase'		=> ($this->getState('clientId') == 1) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache')
 		);
 
-		jimport('joomla.cache.cache');
-
-		// We need to clear the previously used cache handlers, otherwise backend cachebase can't be used
-		JCache::$_handler = array();
-
 		$cache = JCache::getInstance('', $options);
+
 		return $cache;
 	}
 

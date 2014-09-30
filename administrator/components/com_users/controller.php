@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Users master display controller.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_users
  * @since		1.6
  */
-class UsersController extends JController
+class UsersController extends JControllerLegacy
 {
 	/**
 	 * Checks whether a user can see this view.
@@ -58,8 +54,6 @@ class UsersController extends JController
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		require_once JPATH_COMPONENT.'/helpers/users.php';
-
 		// Load the submenu.
 		UsersHelper::addSubmenu(JRequest::getCmd('view', 'users'));
 
@@ -82,7 +76,7 @@ class UsersController extends JController
 
 			return false;
 		}
-		else if ($view == 'group' && $layout == 'edit' && !$this->checkEditId('com_users.edit.group', $id)) {
+		elseif ($view == 'group' && $layout == 'edit' && !$this->checkEditId('com_users.edit.group', $id)) {
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
@@ -90,11 +84,19 @@ class UsersController extends JController
 
 			return false;
 		}
-		else if ($view == 'level' && $layout == 'edit' && !$this->checkEditId('com_users.edit.level', $id)) {
+		elseif ($view == 'level' && $layout == 'edit' && !$this->checkEditId('com_users.edit.level', $id)) {
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
 			$this->setRedirect(JRoute::_('index.php?option=com_users&view=levels', false));
+
+			return false;
+		}
+		elseif ($view == 'note' && $layout == 'edit' && !$this->checkEditId('com_users.edit.note', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_users&view=notes', false));
 
 			return false;
 		}

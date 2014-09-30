@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: route.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Site
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,13 +17,14 @@ jimport('joomla.application.categories');
  * Contact Component Route Helper
  *
  * @static
- * @package		Joomla
- * @subpackage	Contact
+ * @package		Joomla.Site
+ * @subpackage	com_contact
  * @since 1.5
  */
 abstract class ContactHelperRoute
 {
 	protected static $lookup;
+
 	/**
 	 * @param	int	The route of the newsfeed
 	 */
@@ -49,9 +49,6 @@ abstract class ContactHelperRoute
 		if ($item = self::_findItem($needles)) {
 			$link .= '&Itemid='.$item;
 		}
-		elseif ($item = self::_findItem()) {
-			$link .= '&Itemid='.$item;
-		}
 
 		return $link;
 	}
@@ -69,38 +66,24 @@ abstract class ContactHelperRoute
 			$category = JCategories::getInstance('Contact')->get($id);
 		}
 
-		if($id < 1)
+		if ($id < 1 || !($category instanceof JCategoryNode))
 		{
 			$link = '';
 		}
 		else
 		{
-			$needles = array(
-				'category' => array($id)
-			);
+			$needles = array();
+			
+			//Create the link
+			$link = 'index.php?option=com_contact&view=category&id='.$id;
+			
+			$catids = array_reverse($category->getPath());
+			$needles['category'] = $catids;
+			$needles['categories'] = $catids;
 
 			if ($item = self::_findItem($needles))
 			{
-				$link = 'index.php?Itemid='.$item;
-			}
-			else
-			{
-				//Create the link
-				$link = 'index.php?option=com_contact&view=category&id='.$id;
-				if($category)
-				{
-					$catids = array_reverse($category->getPath());
-					$needles = array(
-						'category' => $catids,
-						'categories' => $catids
-					);
-					if ($item = self::_findItem($needles)) {
-						$link .= '&Itemid='.$item;
-					}
-					elseif ($item = self::_findItem()) {
-						$link .= '&Itemid='.$item;
-					}
-				}
+				$link .= '&Itemid='.$item;
 			}
 		}
 
@@ -149,12 +132,11 @@ abstract class ContactHelperRoute
 				}
 			}
 		}
-		else
+
+		$active = $menus->getActive();
+		if ($active)
 		{
-			$active = $menus->getActive();
-			if ($active) {
-				return $active->id;
-			}
+			return $active->id;
 		}
 
 		return null;

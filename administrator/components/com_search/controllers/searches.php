@@ -1,16 +1,12 @@
 <?php
 /**
- * @version		$Id: searches.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Search
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_search
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.controller');
 
 /**
  * Methods supporting a list of search terms.
@@ -19,7 +15,7 @@ jimport('joomla.application.controller');
  * @subpackage	com_search
  * @since		1.6
  */
-class SearchControllerSearches extends JController
+class SearchControllerSearches extends JControllerLegacy
 {
 	/**
 	 * Method to reset the seach log table.
@@ -29,7 +25,7 @@ class SearchControllerSearches extends JController
 	public function reset()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$model = $this->getModel('Searches');

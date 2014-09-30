@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: mod_wrapper.php 20806 2011-02-21 19:44:59Z dextercowley $
  * @package		Joomla.Site
  * @subpackage	mod_wrapper
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,5 +21,6 @@ $width	= htmlspecialchars($params->get('width'));
 $height = htmlspecialchars($params->get('height'));
 $scroll = htmlspecialchars($params->get('scrolling'));
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
+$frameborder = htmlspecialchars($params->get('frameborder'));
 
 require JModuleHelper::getLayoutPath('mod_wrapper', $params->get('layout', 'default'));

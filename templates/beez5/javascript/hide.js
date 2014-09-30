@@ -2,10 +2,11 @@
 
 /*global window, localStorage, Cookie, altopen, altclose, big, small, rightopen, rightclose, bildauf, bildzu */
 
-//Storeage functions
-function supportsLocalStorage() {
-	return ('localStorage' in window) && window.localStorage !== null;
-}
+Object.append(Browser.Features, {
+	localstorage: (function() {
+		return ('localStorage' in window) && window.localStorage !== null;
+	})()
+});
 
 function saveIt(name) {
 	var x = document.id(name).style.display;
@@ -13,8 +14,13 @@ function saveIt(name) {
 	if (!x) {
 		alert('No cookie available');
 	} else {
-		if (supportsLocalStorage()) {
-			localStorage[name] = x;
+		if (Browser.Features.localstorage) {
+			try {
+				localStorage[name] = x;
+			}
+			catch (e) {
+				// Most likely the storage is full or deactivated
+			}
 		} else {
 			Cookie.write(name, x, {duration: 7});
 		}
@@ -22,7 +28,7 @@ function saveIt(name) {
 }
 
 function readIt(name) {
-	if (supportsLocalStorage()) {
+	if (Browser.Features.localstorage) {
 		return localStorage[name];
 	} else {
 		return Cookie.read(name);
@@ -39,12 +45,6 @@ window.addEvent('domready', function () {
 	if (document.id('nav')) {
 		document.id('nav').setProperties( {
 			role : 'navigation'
-		});
-	}
-
-	if (document.id('breadcrumbs')) {
-		document.id('breadcrumbs').setProperties( {
-			role : 'breadcrumbs'
 		});
 	}
 
@@ -118,6 +118,15 @@ window.addEvent('domready', function() {
 				if (cookieset == 'block') {
 					el.setStyle('display', 'block');
 					el.setProperty('aria-expanded', 'true');
+					el.slide('show');//.slide('hide').slide('in');
+					el.getParent().setProperty('class', 'slide');
+					var eltern = el.getParent().getParent();
+					var elternh = eltern.getElement('h3');
+					var elternbild = eltern.getElement('img');
+					elternbild.setProperties( {
+					alt : altopen,
+					src : bildzu
+					});
 				}
 
 			}

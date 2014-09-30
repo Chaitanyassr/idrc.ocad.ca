@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default_ftp.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	Templates.hathor
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -16,8 +15,8 @@ defined('_JEXEC') or die;
 
 	<?php echo JText::_('COM_INSTALLER_MSG_DESCFTP'); ?>
 
-	<?php if (JError::isError($this->ftp)): ?>
-		<p><?php echo JText::_($this->ftp->message); ?></p>
+	<?php if ($this->ftp instanceof Exception): ?>
+		<p><?php echo JText::_($this->ftp->getMessage()); ?></p>
 	<?php endif; ?>
 
 	<ul class="adminformlist">

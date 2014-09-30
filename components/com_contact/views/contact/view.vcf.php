@@ -1,21 +1,18 @@
 <?php
 /**
- * @version		$Id: view.vcf.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-jimport('joomla.application.component.view');
 
-class ContactViewContact extends JView
+class ContactViewContact extends JViewLegacy
 {
 	protected $state;
 	protected $item;
-	
+
 	public function display()
 	{
 		// Get model data.
@@ -29,14 +26,14 @@ class ContactViewContact extends JView
 		}
 
 		$doc = JFactory::getDocument();
-		$doc->setMetaData('Content-Type','text/directory', true);
+		$doc->setMetaData('Content-Type', 'text/directory', true);
 
 		// Initialise variables.
 		$app		= JFactory::getApplication();
 		$params 	= $app->getParams();
 		$user		= JFactory::getUser();
 		$dispatcher =& JDispatcher::getInstance();
-		
+
 		// Compute lastname, firstname and middlename
 		$item->name = trim($item->name);
 
@@ -67,10 +64,10 @@ class ContactViewContact extends JView
 			$card_name = $firstname . ($middlename ? ' ' . $middlename : '') . ($lastname ? ' ' . $lastname : '');
 		}
 
-		$rev = date('c',strtotime($item->modified));
+		$rev = date('c', strtotime($item->modified));
 
-		JResponse::setHeader('Content-disposition: attachment; filename="'.$card_name.'.vcf"', true);
-		
+		JResponse::setHeader('Content-disposition', 'attachment; filename="'.$card_name.'.vcf"', true);
+
 		$vcard = array();
 		$vcard[].= 'BEGIN:VCARD';
 		$vcard[].= 'VERSION:3.0';
@@ -87,8 +84,7 @@ class ContactViewContact extends JView
 		$vcard[] = 'REV:'.$rev.'Z';
 		$vcard[] = 'END:VCARD';
 
-		echo implode("\n",$vcard);
+		echo implode("\n", $vcard);
 		return true;
 	}
-}	
-
+}

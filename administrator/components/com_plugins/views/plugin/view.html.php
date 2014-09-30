@@ -1,23 +1,19 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View to edit a plugin.
  *
  * @package		Joomla.Administrator
- * @subpackage	Plugins
+ * @subpackage	com_plugins
  * @since		1.5
  */
-class PluginsViewPlugin extends JView
+class PluginsViewPlugin extends JViewLegacy
 {
 	protected $item;
 	protected $form;
@@ -58,8 +54,8 @@ class PluginsViewPlugin extends JView
 
 		// If not checked out, can save the item.
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::apply('plugin.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('plugin.save', 'JTOOLBAR_SAVE');
+			JToolBarHelper::apply('plugin.apply');
+			JToolBarHelper::save('plugin.save');
 		}
 		JToolBarHelper::cancel('plugin.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::divider();

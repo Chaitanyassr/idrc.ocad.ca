@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: helper.php 20228 2011-01-10 00:52:54Z eddieajau $
  * @package		Joomla.Site
  * @subpackage	mod_whosonline
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,7 +14,6 @@ class modWhosonlineHelper
 	// show online count
 	static function getOnlineCount() {
 		$db		= JFactory::getDbo();
-		$sessions = null;
 		// calculate number of guests and users
 		$result	= array();
 		$user_array  = 0;
@@ -25,11 +23,7 @@ class modWhosonlineHelper
 		$query->from('#__session');
 		$query->where('client_id = 0');
 		$db->setQuery($query);
-		$sessions = $db->loadObjectList();
-
-		if ($db->getErrorNum()) {
-			JError::raiseWarning(500, $db->stderr());
-		}
+		$sessions = (array) $db->loadObjectList();
 
 		if (count($sessions)) {
 			foreach ($sessions as $session) {
@@ -51,20 +45,28 @@ class modWhosonlineHelper
 	}
 
 	// show online member names
-	static function getOnlineUserNames() {
+	static function getOnlineUserNames($params) {
 		$db		= JFactory::getDbo();
-		$result	= null;
 		$query	= $db->getQuery(true);
 		$query->select('a.username, a.time, a.userid, a.usertype, a.client_id');
 		$query->from('#__session AS a');
 		$query->where('a.userid != 0');
+		$query->where('a.client_id = 0');
 		$query->group('a.userid');
-		$db->setQuery($query);
-		$result = $db->loadObjectList();
-		if ($db->getErrorNum()) {
-			JError::raiseWarning(500, $db->stderr());
+		$user = JFactory::getUser();
+		if (!$user->authorise('core.admin') && $params->get('filter_groups', 0) == 1)
+		{
+			$groups = $user->getAuthorisedGroups();
+			if (empty($groups))
+			{
+				return array();
+			}
+			$query->leftJoin('#__user_usergroup_map AS m ON m.user_id = a.userid');
+			$query->leftJoin('#__usergroups AS ug ON ug.id = m.group_id');
+			$query->where('ug.id in (' . implode(',', $groups) . ')');
+			$query->where('ug.id <> 1');
 		}
-
-		return $result;
+		$db->setQuery($query);
+		return (array) $db->loadObjectList();
 	}
 }

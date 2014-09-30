@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: select.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Modules
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_modules
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -85,7 +84,7 @@ class ModulesModelSelect extends JModelList
 				'a.extension_id, a.name, a.element AS module'
 			)
 		);
-		$query->from('`#__extensions` AS a');
+		$query->from($db->quoteName('#__extensions').' AS a');
 
 		// Filter by module
 		$query->where('a.type = '.$db->Quote('module'));
@@ -94,8 +93,11 @@ class ModulesModelSelect extends JModelList
 		$clientId = $this->getState('filter.client_id');
 		$query->where('a.client_id = '.(int) $clientId);
 
+		// Filter by enabled
+		$query->where('a.enabled = 1');
+
 		// Add the list ordering clause.
-		$query->order($db->getEscaped($this->getState('list.ordering', 'a.ordering')).' '.$db->getEscaped($this->getState('list.direction', 'ASC')));
+		$query->order($db->escape($this->getState('list.ordering', 'a.ordering')).' '.$db->escape($this->getState('list.direction', 'ASC')));
 
 		//echo nl2br(str_replace('#__','jos_',$query));
 		return $query;
@@ -127,10 +129,8 @@ class ModulesModelSelect extends JModelList
 
 					// 1.5 Format; Core files or language packs then
 			// 1.6 3PD Extension Support
-				$lang->load($item->module.'.sys', $client->path, null, false, false)
-			||	$lang->load($item->module.'.sys', $client->path.'/modules/'.$item->module, null, false, false)
-			||	$lang->load($item->module.'.sys', $client->path, $lang->getDefault(), false, false)
-			||	$lang->load($item->module.'.sys', $client->path.'/modules/'.$item->module, $lang->getDefault(), false, false);
+				$lang->load($item->module . '.sys', $client->path, null, false, true)
+			||	$lang->load($item->module . '.sys', $client->path . '/modules/' . $item->module, null, false, true);
 			$item->name	= JText::_($item->name);
 
 			if (isset($item->xml) && $text = trim($item->xml->description)) {

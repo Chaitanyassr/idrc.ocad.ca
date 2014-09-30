@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: edit_metadata.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	Templates.hathor
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +11,7 @@ defined('_JEXEC') or die;
 
 $fieldSets = $this->form->getFieldsets('metadata');
 foreach ($fieldSets as $name => $fieldSet) :
-	echo JHtml::_('sliders.panel',JText::_($fieldSet->label), $name.'-options');
+	echo JHtml::_('sliders.panel', JText::_($fieldSet->label), $name.'-options');
 	if (isset($fieldSet->description) && trim($fieldSet->description)) :
 		echo '<p class="tip">'.$this->escape(JText::_($fieldSet->description)).'</p>';
 	endif;
@@ -23,20 +22,16 @@ foreach ($fieldSets as $name => $fieldSet) :
 			<?php if ($name == 'jmetadata') : // Include the real fields in this panel. ?>
 				<li><?php echo $this->form->getLabel('metadesc'); ?>
 				<?php echo $this->form->getInput('metadesc'); ?></li>
-	
+
 				<li><?php echo $this->form->getLabel('metakey'); ?>
 				<?php echo $this->form->getInput('metakey'); ?></li>
-	
+
 				<li><?php echo $this->form->getLabel('xreference'); ?>
 				<?php echo $this->form->getInput('xreference'); ?></li>
 			<?php endif; ?>
 			<?php foreach ($this->form->getFieldset($name) as $field) : ?>
-				<li>
-					<?php if (!$field->hidden): ?>
-						<?php echo $field->label; ?>
-					<?php endif; ?>
-					<?php echo $field->input; ?>
-				</li>
+				<li><?php echo $field->label; ?>
+				<?php echo $field->input; ?></li>
 			<?php endforeach; ?>
 		</ul>
 	</fieldset>

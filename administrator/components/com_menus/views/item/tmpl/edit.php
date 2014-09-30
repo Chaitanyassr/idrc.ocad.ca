@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: edit.php 20822 2011-02-21 23:02:52Z dextercowley $
  * @package		Joomla.Administrator
  * @subpackage	com_menus
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,9 +12,10 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 
 // Load the tooltip behavior.
+JHtml::_('behavior.framework');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-JHTML::_('behavior.modal');
+JHtml::_('behavior.modal');
 ?>
 
 <script type="text/javascript">
@@ -24,13 +24,13 @@ JHTML::_('behavior.modal');
 		if (task == 'item.setType' || task == 'item.setMenuType') {
 			if(task == 'item.setType') {
 				document.id('item-form').elements['jform[type]'].value = type;
-				document.getElementById('fieldtype').value = 'type';
+				document.id('fieldtype').value = 'type';
 			} else {
 				document.id('item-form').elements['jform[menutype]'].value = type;
 			}
-			Joomla.submitform('item.setType', document.getElementById('item-form'));
+			Joomla.submitform('item.setType', document.id('item-form'));
 		} else if (task == 'item.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
-			Joomla.submitform(task, document.getElementById('item-form'));
+			Joomla.submitform(task, document.id('item-form'));
 		} else {
 			// special case for modal popups validation response
 			$$('#item-form .modal-value.invalid').each(function(field){
@@ -50,7 +50,6 @@ JHTML::_('behavior.modal');
 		<legend><?php echo JText::_('COM_MENUS_ITEM_DETAILS');?></legend>
 			<ul class="adminformlist">
 
-
 				<li><?php echo $this->form->getLabel('type'); ?>
 				<?php echo $this->form->getInput('type'); ?></li>
 
@@ -58,12 +57,16 @@ JHTML::_('behavior.modal');
 				<?php echo $this->form->getInput('title'); ?></li>
 
 				<?php if ($this->item->type =='url'): ?>
-					<?php $this->form->setFieldAttribute('link','readonly','false');?>
+					<?php $this->form->setFieldAttribute('link', 'readonly', 'false');?>
 					<li><?php echo $this->form->getLabel('link'); ?>
 					<?php echo $this->form->getInput('link'); ?></li>
 				<?php endif; ?>
 
-				<?php if ($this->item->type != 'alias'): ?>
+				<?php if ($this->item->type == 'alias'): ?>
+					<li> <?php echo $this->form->getLabel('aliastip'); ?></li>
+				<?php endif; ?>
+
+				<?php if ($this->item->type !='url'): ?>
 					<li><?php echo $this->form->getLabel('alias'); ?>
 					<?php echo $this->form->getInput('alias'); ?></li>
 				<?php endif; ?>
@@ -88,6 +91,9 @@ JHTML::_('behavior.modal');
 				<li><?php echo $this->form->getLabel('parent_id'); ?>
 				<?php echo $this->form->getInput('parent_id'); ?></li>
 
+				<li><?php echo $this->form->getLabel('menuordering'); ?>
+				<?php echo $this->form->getInput('menuordering'); ?></li>
+
 				<li><?php echo $this->form->getLabel('browserNav'); ?>
 				<?php echo $this->form->getInput('browserNav'); ?></li>
 
@@ -110,25 +116,24 @@ JHTML::_('behavior.modal');
 </div>
 
 <div class="width-40 fltrt">
-	<?php echo JHtml::_('sliders.start','menu-sliders-'.$this->item->id); ?>
+	<?php echo JHtml::_('sliders.start', 'menu-sliders-'.$this->item->id); ?>
 	<?php //Load  parameters.
 		echo $this->loadTemplate('options'); ?>
 
 		<div class="clr"></div>
 
 		<?php if (!empty($this->modules)) : ?>
-			<?php echo JHtml::_('sliders.panel',JText::_('COM_MENUS_ITEM_MODULE_ASSIGNMENT'), 'module-options'); ?>
+			<?php echo JHtml::_('sliders.panel', JText::_('COM_MENUS_ITEM_MODULE_ASSIGNMENT'), 'module-options'); ?>
 			<fieldset>
 				<?php echo $this->loadTemplate('modules'); ?>
 			</fieldset>
 		<?php endif; ?>
 
 	<?php echo JHtml::_('sliders.end'); ?>
+
 	<input type="hidden" name="task" value="" />
 	<?php echo $this->form->getInput('component_id'); ?>
 	<?php echo JHtml::_('form.token'); ?>
+	<input type="hidden" id="fieldtype" name="fieldtype" value="" />
 </div>
-<input type="hidden" id="fieldtype" name="fieldtype" value="" />
 </form>
-
-

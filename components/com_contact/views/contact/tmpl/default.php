@@ -1,9 +1,8 @@
 <?php
  /**
- * $Id: default.php 20542 2011-02-04 07:06:15Z infograf768 $
  * @package		Joomla.Site
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +11,7 @@ defined('_JEXEC') or die;
 $cparams = JComponentHelper::getParams ('com_media');
 ?>
 <div class="contact<?php echo $this->pageclass_sfx?>">
-<?php if ($this->params->get('show_page_heading', 1)) : ?>
+<?php if ($this->params->get('show_page_heading')) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
@@ -42,16 +41,16 @@ $cparams = JComponentHelper::getParams ('com_media');
 		</form>
 	<?php endif; ?>
 	<?php  if ($this->params->get('presentation_style')!='plain'){?>
-		<?php  echo  JHtml::_($this->params->get('presentation_style').'.start', 'contact-slider'); ?>	
-	<?php  echo JHtml::_($this->params->get('presentation_style').'.panel',JText::_('COM_CONTACT_DETAILS'), 'basic-details'); } ?>
+		<?php  echo  JHtml::_($this->params->get('presentation_style').'.start', 'contact-slider'); ?>
+	<?php  echo JHtml::_($this->params->get('presentation_style').'.panel', JText::_('COM_CONTACT_DETAILS'), 'basic-details'); } ?>
 	<?php if ($this->params->get('presentation_style')=='plain'):?>
 		<?php  echo '<h3>'. JText::_('COM_CONTACT_DETAILS').'</h3>';  ?>
-	<?php endif; ?>	
+	<?php endif; ?>
 	<?php if ($this->contact->image && $this->params->get('show_image')) : ?>
 		<div class="contact-image">
-			<?php echo JHTML::_('image',$this->contact->image, JText::_('COM_CONTACT_IMAGE_DETAILS'), array('align' => 'middle')); ?>
+			<?php echo JHtml::_('image', $this->contact->image, JText::_('COM_CONTACT_IMAGE_DETAILS'), array('align' => 'middle')); ?>
 		</div>
-	<?php endif; ?> 	
+	<?php endif; ?>
 
 	<?php if ($this->contact->con_position && $this->params->get('show_position')) : ?>
 		<p class="contact-position"><?php echo $this->contact->con_position; ?></p>
@@ -61,8 +60,8 @@ $cparams = JComponentHelper::getParams ('com_media');
 
 	<?php if ($this->params->get('allow_vcard')) :	?>
 		<?php echo JText::_('COM_CONTACT_DOWNLOAD_INFORMATION_AS');?>
-			<a href="<?php echo JURI::base(); ?>index.php?option=com_contact&amp;view=contact&amp;id=<?php echo $this->contact->id; ?>&amp;format=vcf">
-				<?php echo JText::_('COM_CONTACT_VCARD');?></a>
+			<a href="<?php echo JRoute::_('index.php?option=com_contact&amp;view=contact&amp;id='.$this->contact->id . '&amp;format=vcf'); ?>">
+			<?php echo JText::_('COM_CONTACT_VCARD');?></a>
 	<?php endif; ?>
 	<p></p>
 	<?php if ($this->params->get('show_email_form') && ($this->contact->email_to || $this->contact->user_id)) : ?>

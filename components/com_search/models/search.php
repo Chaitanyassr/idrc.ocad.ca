@@ -1,25 +1,21 @@
 <?php
 /**
- * @version		$Id: search.php 20228 2011-01-10 00:52:54Z eddieajau $
  * @package		Joomla.Site
- * @subpackage	Search
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_search
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.model');
 
 /**
  * Search Component Search Model
  *
  * @package		Joomla.Site
- * @subpackage	Search
+ * @subpackage	com_search
  * @since 1.5
  */
-class SearchModelSearch extends JModel
+class SearchModelSearch extends JModelLegacy
 {
 	/**
 	 * Sezrch data array
@@ -63,13 +59,29 @@ class SearchModelSearch extends JModel
 		$config = JFactory::getConfig();
 
 		// Get the pagination request variables
-		$this->setState('limit', $app->getUserStateFromRequest('com_search.limit', 'limit', $config->get('list_limit'), 'int'));
-		$this->setState('limitstart', JRequest::getVar('limitstart', 0, '', 'int'));
+		$this->setState('limit', $app->getUserStateFromRequest('com_search.limit', 'limit', $config->get('list_limit'), 'uint'));
+		$this->setState('limitstart', JRequest::getUInt('limitstart', 0));
+
+		// Get parameters.
+		$params = $app->getParams();
+
+		if ($params->get('searchphrase') == 1)
+		{
+			$searchphrase = 'any';
+		}
+		elseif ($params->get('searchphrase') == 2)
+		{
+			$searchphrase = 'exact';
+		}
+		else
+		{
+			$searchphrase = 'all';
+		}
 
 		// Set the search parameters
 		$keyword		= urldecode(JRequest::getString('searchword'));
-		$match			= JRequest::getWord('searchphrase', 'all');
-		$ordering		= JRequest::getWord('ordering', 'newest');
+		$match			= JRequest::getWord('searchphrase', $searchphrase);
+		$ordering		= JRequest::getWord('ordering', $params->get('ordering', 'newest'));
 		$this->setSearch($keyword, $match, $ordering);
 
 		//Set the search areas
@@ -88,6 +100,10 @@ class SearchModelSearch extends JModel
 	function setSearch($keyword, $match = 'all', $ordering = 'newest')
 	{
 		if (isset($keyword)) {
+			$this->setState('origkeyword', $keyword);
+			if($match !== 'exact') {
+				$keyword 		= preg_replace('#\xE3\x80\x80#s', ' ', $keyword);
+			}
 			$this->setState('keyword', $keyword);
 		}
 

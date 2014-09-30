@@ -1,20 +1,18 @@
 <?php
 /**
- * @version		$Id: manage.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
-// No direct access.
 defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Administrator
  * @subpackage	com_installer
  */
-class InstallerControllerManage extends JController
+class InstallerControllerManage extends JControllerLegacy
 {
 	/**
 	 * Constructor.
@@ -39,7 +37,7 @@ class InstallerControllerManage extends JController
 	public function publish()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$user	= JFactory::getUser();
@@ -60,14 +58,14 @@ class InstallerControllerManage extends JController
 			} else {
 				if ($value == 1) {
 					$ntext = 'COM_INSTALLER_N_EXTENSIONS_PUBLISHED';
-				} else if ($value == 0) {
+				} elseif ($value == 0) {
 					$ntext = 'COM_INSTALLER_N_EXTENSIONS_UNPUBLISHED';
 				}
 				$this->setMessage(JText::plural($ntext, count($ids)));
 			}
 		}
 
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage',false));
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage', false));
 	}
 
 	/**
@@ -79,14 +77,14 @@ class InstallerControllerManage extends JController
 	public function remove()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		$eid	= JRequest::getVar('cid', array(), '', 'array');
 		$model	= $this->getModel('manage');
 
 		JArrayHelper::toInteger($eid, array());
 		$result = $model->remove($eid);
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage',false));
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage', false));
 	}
 
 	/**
@@ -99,13 +97,13 @@ class InstallerControllerManage extends JController
 	function refresh()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		$uid	= JRequest::getVar('cid', array(), '', 'array');
 		$model	= $this->getModel('manage');
 
 		JArrayHelper::toInteger($uid, array());
 		$result = $model->refresh($uid);
-		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage',false));
+		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage', false));
 	}
 }

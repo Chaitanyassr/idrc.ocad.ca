@@ -26,7 +26,14 @@
 	<!-- Add fields to the parameters object for the layout. -->
 <fields name="params">
 <fieldset name="basic" label="JGLOBAL_CATEGORY_OPTIONS">
-
+		<field name="show_category_heading_title_text" type="list"
+ 			label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
+			description="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_DESC"
+			>
+				<option value="">JGLOBAL_USE_GLOBAL</option>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+		</field>
 			<field name="show_category_title" type="list"
 				label="JGLOBAL_SHOW_CATEGORY_TITLE"
 				description="JGLOBAL_SHOW_CATEGORY_TITLE_DESC"
@@ -67,7 +74,7 @@
 				<option value="4">J4</option>
 				<option value="5">J5</option>
 			</field>
- 
+
 			<field name="show_empty_categories" type="list"
 				label="JGLOBAL_SHOW_EMPTY_CATEGORIES_LABEL"
 				description="COM_CONTENT_SHOW_EMPTY_CATEGORIES_DESC"
@@ -177,13 +184,13 @@
 				<option value="0">JHIDE</option>
 				<option value="1">JSHOW</option>
 			</field>
-			
+
 			<field
 			name="spacer1"
 			type="spacer"
 			hr="true"
 			/>
-			
+
 			<field name="orderby_pri" type="list"
 				description="JGLOBAL_CATEGORY_ORDER_DESC"
 				label="JGLOBAL_CATEGORY_ORDER_LABEL"
@@ -254,7 +261,7 @@
 				<option value="100">J100</option>
 				<option value="0">JALL</option>
 		</field>
-		
+
 </fieldset>
 
 <fieldset name="article" label="COM_CONTENT_ATTRIBS_FIELDSET_LABEL">

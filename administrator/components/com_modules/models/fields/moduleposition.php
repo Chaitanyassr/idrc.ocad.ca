@@ -1,20 +1,18 @@
 <?php
 /**
- * @version		$Id: moduleposition.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('text');
 
 /**
  * Supports a modal article picker.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_content
+ * @subpackage	com_modules
  * @since		1.6
  */
 class JFormFieldModulePosition extends JFormFieldText

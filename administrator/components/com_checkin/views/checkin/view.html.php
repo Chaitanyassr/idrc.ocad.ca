@@ -1,26 +1,22 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Checkin
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_checkin
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * HTML View class for the Checkin component
  *
  * @static
  * @package		Joomla.Administrator
- * @subpackage	Checkin
+ * @subpackage	com_checkin
  * @since 1.0
  */
-class CheckinViewCheckin extends JView
+class CheckinViewCheckin extends JViewLegacy
 {
 	protected $tables;
 
@@ -48,9 +44,9 @@ class CheckinViewCheckin extends JView
 	protected function addToolbar()
 	{
 		JToolBarHelper::title(JText::_('COM_CHECKIN_GLOBAL_CHECK_IN'), 'checkin.png');
+		JToolBarHelper::custom('checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+		JToolBarHelper::divider();
 		if (JFactory::getUser()->authorise('core.admin', 'com_checkin')) {
-			JToolBarHelper::custom('checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_checkin');
 			JToolBarHelper::divider();
 		}

@@ -1,14 +1,21 @@
 <?php
 /**
- * @version		$Id: article.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
+/**
+ * Renders an article element
+ *
+ * @package		Joomla.Administrator
+ * @subpackage	com_content
+ * @deprecated	JParameter is deprecated and will be removed in a future version. Use JForm instead.
+ * @since		1.5
+ */
 class JElementArticle extends JElement
 {
 	/**

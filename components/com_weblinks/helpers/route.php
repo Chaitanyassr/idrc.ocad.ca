@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: route.php 20250 2011-01-10 14:27:02Z chdemko $
- * @package		Joomla
- * @subpackage	Weblinks
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Site
+ * @subpackage	com_weblinks
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,8 +17,8 @@ jimport('joomla.application.categories');
  * Weblinks Component Route Helper
  *
  * @static
- * @package		Joomla
- * @subpackage	Weblinks
+ * @package		Joomla.Site
+ * @subpackage	com_weblinks
  * @since 1.5
  */
 abstract class WeblinksHelperRoute
@@ -49,9 +48,6 @@ abstract class WeblinksHelperRoute
 		}
 
 		if ($item = self::_findItem($needles)) {
-			$link .= '&Itemid='.$item;
-		}
-		else if ($item = self::_findItem()) {
 			$link .= '&Itemid='.$item;
 		}
 
@@ -90,35 +86,22 @@ abstract class WeblinksHelperRoute
 			$category = JCategories::getInstance('Weblinks')->get($id);
 		}
 
-		if ($id < 1) {
+		if ($id < 1 || !($category instanceof JCategoryNode))
+		{
 			$link = '';
 		}
 		else {
-			$needles = array(
-				'category' => array($id)
-			);
+			$needles = array();
+
+			//Create the link
+			$link = 'index.php?option=com_weblinks&view=category&id='.$id;
+			
+			$catids = array_reverse($category->getPath());
+			$needles['category'] = $catids;
+			$needles['categories'] = $catids;
 
 			if ($item = self::_findItem($needles)) {
-				$link = 'index.php?Itemid='.$item;
-			}
-			else {
-				//Create the link
-				$link = 'index.php?option=com_weblinks&view=category&id='.$id;
-
-				if ($category) {
-					$catids = array_reverse($category->getPath());
-					$needles = array(
-						'category' => $catids,
-						'categories' => $catids
-					);
-
-					if ($item = self::_findItem($needles)) {
-						$link .= '&Itemid='.$item;
-					}
-					else if ($item = self::_findItem()) {
-						$link .= '&Itemid='.$item;
-					}
-				}
+				$link .= '&Itemid='.$item;
 			}
 		}
 
@@ -136,40 +119,46 @@ abstract class WeblinksHelperRoute
 
 			$component	= JComponentHelper::getComponent('com_weblinks');
 			$items		= $menus->getItems('component_id', $component->id);
-			foreach ($items as $item)
-			{
-				if (isset($item->query) && isset($item->query['view'])) {
-					$view = $item->query['view'];
 
-					if (!isset(self::$lookup[$view])) {
-						self::$lookup[$view] = array();
-					}
+			if ($items) {
+				foreach ($items as $item)
+				{
+					if (isset($item->query) && isset($item->query['view'])) {
+						$view = $item->query['view'];
 
-					if (isset($item->query['id'])) {
-						self::$lookup[$view][$item->query['id']] = $item->id;
+						if (!isset(self::$lookup[$view])) {
+							self::$lookup[$view] = array();
+						}
+
+						if (isset($item->query['id'])) {
+							self::$lookup[$view][$item->query['id']] = $item->id;
+						}
 					}
 				}
 			}
 		}
 
-		if ($needles) {
+		if ($needles)
+		{
 			foreach ($needles as $view => $ids)
 			{
-				if (isset(self::$lookup[$view])) {
+				if (isset(self::$lookup[$view]))
+				{
 					foreach($ids as $id)
 					{
-						if (isset(self::$lookup[$view][(int)$id])) {
+						if (isset(self::$lookup[$view][(int)$id]))
+						{
 							return self::$lookup[$view][(int)$id];
 						}
 					}
 				}
 			}
 		}
-		else {
-			$active = $menus->getActive();
-			if ($active) {
-				return $active->id;
-			}
+
+		$active = $menus->getActive();
+		if ($active)
+		{
+			return $active->id;
 		}
 
 		return null;

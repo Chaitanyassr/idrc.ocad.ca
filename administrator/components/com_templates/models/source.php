@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: source.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Templates
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_templates
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,7 +13,7 @@ jimport('joomla.application.component.modelform');
 
 /**
  * @package		Joomla.Administrator
- * @subpackage	Templates
+ * @subpackage	com_templates
  * @since		1.5
  */
 class TemplatesModelSource extends JModelForm
@@ -69,6 +68,18 @@ class TemplatesModelSource extends JModelForm
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();
+
+		// Codemirror or Editor None should be enabled
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select('COUNT(*)');
+		$query->from('#__extensions as a');
+		$query->where('(a.name ='.$db->quote('plg_editors_codemirror').' AND a.enabled = 1) OR (a.name ='.$db->quote('plg_editors_none').' AND a.enabled = 1)');
+		$db->setQuery($query);
+		$state = $db->loadResult();
+		if ((int)$state < 1 ) {
+			$app->enqueueMessage(JText::_('COM_TEMPLATES_ERROR_EDITOR_DISABLED'), 'warning');
+		}
 
 		// Get the form.
 		$form = $this->loadForm('com_templates.source', 'source', array('control' => 'jform', 'load_data' => $loadData));
@@ -177,7 +188,6 @@ class TemplatesModelSource extends JModelForm
 	public function save($data)
 	{
 		jimport('joomla.filesystem.file');
-		jimport('joomla.client.helper');
 
 		// Get the template.
 		$template = $this->getTemplate();
@@ -216,7 +226,7 @@ class TemplatesModelSource extends JModelForm
 		if (!$ftp['enabled'] && JPath::isOwner($filePath) && !JPath::setPermissions($filePath, '0444')) {
 			$this->setError(JText::_('COM_TEMPLATES_ERROR_SOURCE_FILE_NOT_UNWRITABLE'));
 			return false;
-		} else if (!$return) {
+		} elseif (!$return) {
 			$this->setError(JText::sprintf('COM_TEMPLATES_ERROR_FAILED_TO_SAVE_FILENAME', $fileName));
 			return false;
 		}

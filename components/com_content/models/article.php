@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: article.php 20810 2011-02-21 20:01:22Z dextercowley $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -43,7 +42,7 @@ class ContentModelArticle extends JModelItem
 		$pk = JRequest::getInt('id');
 		$this->setState('article.id', $pk);
 
-		$offset = JRequest::getInt('limitstart');
+		$offset = JRequest::getUInt('limitstart');
 		$this->setState('list.offset', $offset);
 
 		// Load the parameters.
@@ -56,6 +55,8 @@ class ContentModelArticle extends JModelItem
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
 		}
+
+		$this->setState('filter.language', JLanguageMultilang::isEnabled());
 	}
 
 	/**
@@ -67,6 +68,10 @@ class ContentModelArticle extends JModelItem
 	 */
 	public function &getItem($pk = null)
 	{
+
+		// Get current user for authorisation checks
+		$user	= JFactory::getUser();
+		
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('article.id');
 
@@ -86,7 +91,9 @@ class ContentModelArticle extends JModelItem
 					// In this case, the state is set to 0 to indicate Unpublished (even if the article state is Published)
 					'CASE WHEN badcats.id is null THEN a.state ELSE 0 END AS state, ' .
 					'a.mask, a.catid, a.created, a.created_by, a.created_by_alias, ' .
-					'a.modified, a.modified_by, a.checked_out, a.checked_out_time, a.publish_up, a.publish_down, ' .
+				// use created if modified is 0
+				'CASE WHEN a.modified = 0 THEN a.created ELSE a.modified END as modified, ' .
+					'a.modified_by, a.checked_out, a.checked_out_time, a.publish_up, a.publish_down, ' .
 					'a.images, a.urls, a.attribs, a.version, a.parentid, a.ordering, ' .
 					'a.metakey, a.metadesc, a.access, a.hits, a.metadata, a.featured, a.language, a.xreference'
 					)
@@ -101,27 +108,47 @@ class ContentModelArticle extends JModelItem
 				$query->select('u.name AS author');
 				$query->join('LEFT', '#__users AS u on u.id = a.created_by');
 
-				// Join on contact table
-				$query->select('contact.id as contactid' ) ;
-				$query->join('LEFT','#__contact_details AS contact on contact.user_id = a.created_by');
+				// Get contact id
+				$subQuery = $db->getQuery(true);
+				$subQuery->select('MAX(contact.id) AS id');
+				$subQuery->from('#__contact_details AS contact');
+				$subQuery->where('contact.published = 1');
+				$subQuery->where('contact.user_id = a.created_by');
 
+				// Filter by language
+				if ($this->getState('filter.language'))
+				{
+					$subQuery->where('(contact.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ') OR contact.language IS NULL)');
+				}
+
+				$query->select('(' . $subQuery . ') as contactid');
+
+				// Filter by language
+				if ($this->getState('filter.language'))
+				{
+					$query->where('a.language in (' . $db->quote(JFactory::getLanguage()->getTag()) . ',' . $db->quote('*') . ')');
+				}
 
 				// Join over the categories to get parent category titles
 				$query->select('parent.title as parent_title, parent.id as parent_id, parent.path as parent_route, parent.alias as parent_alias');
 				$query->join('LEFT', '#__categories as parent ON parent.id = c.parent_id');
 
 				// Join on voting table
-				$query->select('ROUND( v.rating_sum / v.rating_count ) AS rating, v.rating_count as rating_count');
+				$query->select('ROUND(v.rating_sum / v.rating_count, 0) AS rating, v.rating_count as rating_count');
 				$query->join('LEFT', '#__content_rating AS v ON a.id = v.content_id');
 
 				$query->where('a.id = ' . (int) $pk);
 
-				// Filter by start and end dates.
-				$nullDate = $db->Quote($db->getNullDate());
-				$nowDate = $db->Quote(JFactory::getDate()->toMySQL());
+				if ((!$user->authorise('core.edit.state', 'com_content')) && (!$user->authorise('core.edit', 'com_content'))) {
+					// Filter by start and end dates.
+					$nullDate = $db->Quote($db->getNullDate());
+					$date = JFactory::getDate();
 
-				$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
-				$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
+					$nowDate = $db->Quote($date->toSql());
+
+					$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
+					$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
+				}
 
 				// Join to check for category published state in parent categories up the tree
 				// If all categories are published, badcats.id will be null, and we just use the article state
@@ -148,26 +175,24 @@ class ContentModelArticle extends JModelItem
 				}
 
 				if (empty($data)) {
-					return JError::raiseError(404,JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
+					return JError::raiseError(404, JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
 				// Check for published state if filter set.
 				if (((is_numeric($published)) || (is_numeric($archived))) && (($data->state != $published) && ($data->state != $archived))) {
-					return JError::raiseError(404,JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
+					return JError::raiseError(404, JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
 				// Convert parameter fields to objects.
 				$registry = new JRegistry;
-				$registry->loadJSON($data->attribs);
+				$registry->loadString($data->attribs);
+
 				$data->params = clone $this->getState('params');
 				$data->params->merge($registry);
 
 				$registry = new JRegistry;
-				$registry->loadJSON($data->metadata);
+				$registry->loadString($data->metadata);
 				$data->metadata = $registry;
-
-				// Compute selected asset permissions.
-				$user	= JFactory::getUser();
 
 				// Technically guest could edit an article, but lets not check that to improve performance a little.
 				if (!$user->get('guest')) {
@@ -179,7 +204,7 @@ class ContentModelArticle extends JModelItem
 						$data->params->set('access-edit', true);
 					}
 					// Now check if edit.own is available.
-					else if (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+					elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
 						// Check for a valid user and that they are the owner.
 						if ($userId == $data->created_by) {
 							$data->params->set('access-edit', true);

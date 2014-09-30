@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of users.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_users
  * @since		1.6
  */
-class UsersViewUsers extends JView
+class UsersViewUsers extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -38,6 +34,9 @@ class UsersViewUsers extends JView
 			return false;
 		}
 
+		// Include the component HTML helpers.
+		JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+
 		$this->addToolbar();
 		parent::display($tpl);
 	}
@@ -54,22 +53,22 @@ class UsersViewUsers extends JView
 		JToolBarHelper::title(JText::_('COM_USERS_VIEW_USERS_TITLE'), 'user');
 
 		if ($canDo->get('core.create')) {
-			JToolBarHelper::custom('user.add', 'new.png', 'new_f2.png','JTOOLBAR_NEW', false);
+			JToolBarHelper::addNew('user.add');
 		}
 		if ($canDo->get('core.edit')) {
-			JToolBarHelper::custom('user.edit', 'edit.png', 'edit_f2.png','JTOOLBAR_EDIT', true);
+			JToolBarHelper::editList('user.edit');
 		}
 
 		if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::custom('users.activate', 'publish.png', 'publish_f2.png', 'COM_USERS_TOOLBAR_ACTIVATE', true);
-			JToolBarHelper::custom('users.block', 'unpublish.png', 'unpublish_f2.png', 'COM_USERS_TOOLBAR_BLOCK', true);
+			JToolBarHelper::publish('users.activate', 'COM_USERS_TOOLBAR_ACTIVATE', true);
+			JToolBarHelper::unpublish('users.block', 'COM_USERS_TOOLBAR_BLOCK', true);
 			JToolBarHelper::custom('users.unblock', 'unblock.png', 'unblock_f2.png', 'COM_USERS_TOOLBAR_UNBLOCK', true);
 			JToolBarHelper::divider();
 		}
 
 		if ($canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'users.delete','JTOOLBAR_DELETE');
+			JToolBarHelper::deleteList('', 'users.delete');
 			JToolBarHelper::divider();
 		}
 

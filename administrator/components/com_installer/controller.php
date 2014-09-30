@@ -1,16 +1,12 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Installer Controller
@@ -19,7 +15,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_installer
  * @since		1.5
  */
-class InstallerController extends JController
+class InstallerController extends JControllerLegacy
 {
 	/**
 	 * Method to display a view.

@@ -1,20 +1,17 @@
 <?php
 /**
- * @version		$Id: pagebreak.php 20240 2011-01-10 05:46:24Z dextercowley $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
-
 /**
  * Editor Pagebreak buton
  *
- * @package Editors-xtd
+ * @package		Joomla.Plugin
+ * @subpackage	Editors-xtd.pagebreak
  * @since 1.5
  */
 class plgButtonPagebreak extends JPlugin

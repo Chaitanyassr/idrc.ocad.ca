@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: tracks.raw.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Tracks list controller class.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_banners
  * @since		1.6
  */
-class BannersControllerTracks extends JController
+class BannersControllerTracks extends JControllerLegacy
 {
 	/**
 	 * @var		string	The context for persistent state.
@@ -84,15 +80,15 @@ class BannersControllerTracks extends JController
 			$model->setState('list.start', 0);
 
 			$form = JRequest::getVar('jform');
-			$model->setState('basename',$form['basename']);
-			$model->setState('compressed',$form['compressed']);
+			$model->setState('basename', $form['basename']);
+			$model->setState('compressed', $form['compressed']);
 
 			$config = JFactory::getConfig();
 			$cookie_domain = $config->get('cookie_domain', '');
 			$cookie_path = $config->get('cookie_path', '/');
-			jimport('joomla.utilities.utility');
-			setcookie(JUtility::getHash($this->context.'.basename'), $form['basename'], time() + 365 * 86400, $cookie_path, $cookie_domain);
-			setcookie(JUtility::getHash($this->context.'.compressed'), $form['compressed'], time() + 365 * 86400, $cookie_path, $cookie_domain);
+
+			setcookie(JApplication::getHash($this->context.'.basename'), $form['basename'], time() + 365 * 86400, $cookie_path, $cookie_domain);
+			setcookie(JApplication::getHash($this->context.'.compressed'), $form['compressed'], time() + 365 * 86400, $cookie_path, $cookie_domain);
 
 			// Push the model into the view (as default).
 			$view->setModel($model, true);

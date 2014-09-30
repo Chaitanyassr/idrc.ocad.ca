@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: source.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Template style controller class.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.controller');
  * @subpackage	com_templates
  * @since		1.6
  */
-class TemplatesControllerSource extends JController
+class TemplatesControllerSource extends JControllerLegacy
 {
 	/**
 	 * Constructor.
@@ -105,9 +101,13 @@ class TemplatesControllerSource extends JController
 		$recordId	= JRequest::getVar('id');
 		$context	= 'com_templates.edit.source';
 
+		if (preg_match('#\.\.#', base64_decode($recordId))) {
+			return JError::raiseError(500, JText::_('COM_TEMPLATES_ERROR_SOURCE_FILE_NOT_FOUND'));
+		}
+
 		// Access check.
 		if (!$this->allowEdit()) {
-			return JError::raiseWarning(403, 'JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED');
+			return JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'));
 		}
 
 		// Check-out succeeded, push the new record id into the session.
@@ -125,7 +125,7 @@ class TemplatesControllerSource extends JController
 	public function cancel()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$app		= JFactory::getApplication();
@@ -145,7 +145,7 @@ class TemplatesControllerSource extends JController
 	public function save()
 	{
 		// Check for request forgeries.
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$app		= JFactory::getApplication();
@@ -156,18 +156,18 @@ class TemplatesControllerSource extends JController
 
 		// Access check.
 		if (!$this->allowSave()) {
-			return JError::raiseWarning(403, 'JERROR_SAVE_NOT_PERMITTED');
+			return JError::raiseWarning(403, JText::_('JERROR_SAVE_NOT_PERMITTED'));
 		}
 
 		// Match the stored id's with the submitted.
 		if (empty($data['extension_id']) || empty($data['filename'])) {
-			return JError::raiseError(500, 'COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH');
+			return JError::raiseError(500, JText::_('COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH'));
 		}
-		else if ($data['extension_id'] != $model->getState('extension.id')) {
-			return JError::raiseError(500, 'COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH');
+		elseif ($data['extension_id'] != $model->getState('extension.id')) {
+			return JError::raiseError(500, JText::_('COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH'));
 		}
-		else if ($data['filename'] != $model->getState('filename')) {
-			return JError::raiseError(500, 'COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH');
+		elseif ($data['filename'] != $model->getState('filename')) {
+			return JError::raiseError(500, JText::_('COM_TEMPLATES_ERROR_SOURCE_ID_FILENAME_MISMATCH'));
 		}
 
 		// Validate the posted data.
@@ -188,7 +188,7 @@ class TemplatesControllerSource extends JController
 			// Push up to three validation messages out to the user.
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
 			{
-				if (JError::isError($errors[$i])) {
+				if ($errors[$i] instanceof Exception) {
 					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				}
 				else {

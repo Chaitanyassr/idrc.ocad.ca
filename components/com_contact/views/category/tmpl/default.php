@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	com_contacts
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,14 +11,14 @@ defined('_JEXEC') or die;
 
 ?>
 <div class="contact-category<?php echo $this->pageclass_sfx;?>">
-<?php if ($this->params->def('show_page_heading', 1)) : ?>
+<?php if ($this->params->get('show_page_heading')) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
 <?php endif; ?>
 <?php if($this->params->get('show_category_title', 1)) : ?>
 <h2>
-	<?php echo JHtml::_('content.prepare', $this->category->title); ?>
+	<?php echo JHtml::_('content.prepare', $this->category->title, '', 'com_contact.category'); ?>
 </h2>
 <?php endif; ?>
 <?php if ($this->params->def('show_description', 1) || $this->params->def('show_description_image', 1)) : ?>
@@ -28,7 +27,7 @@ defined('_JEXEC') or die;
 		<img src="<?php echo $this->category->getParams()->get('image'); ?>"/>
 	<?php endif; ?>
 	<?php if ($this->params->get('show_description') && $this->category->description) : ?>
-		<?php echo JHtml::_('content.prepare', $this->category->description); ?>
+		<?php echo JHtml::_('content.prepare', $this->category->description, '', 'com_contact.category'); ?>
 	<?php endif; ?>
 	<div class="clr"></div>
 	</div>

@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * Sysinfo View class for the Admin component
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_admin
  * @since		1.6
  */
-class AdminViewSysinfo extends JView
+class AdminViewSysinfo extends JViewLegacy
 {
 	/**
 	 * @var array some php settings
@@ -52,10 +48,10 @@ class AdminViewSysinfo extends JView
 
 		// Initialise variables.
 		$this->php_settings	= $this->get('PhpSettings');
-		$this->config			= $this->get('config');
+		$this->config		= $this->get('config');
 		$this->info			= $this->get('info');
 		$this->php_info		= $this->get('PhpInfo');
-		$this->directory		= $this->get('directory');
+		$this->directory	= $this->get('directory');
 
 		$this->addToolbar();
 		$this->_setSubMenu();

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!-- $Id: module.xml 20725 2011-02-16 09:10:48Z infograf768 $ -->
 <form>
 	<fieldset>
 		<field name="id" type="text"
@@ -44,7 +43,7 @@
 		<field name="published" type="list"
 			default="1"
 			description="COM_MODULES_FIELD_PUBLISHED_DESC"
-			label="JPUBLISHED"
+			label="JSTATUS"
 			size="1"
 		>
 			<option value="1">JPUBLISHED</option>
@@ -80,7 +79,6 @@
 			description="COM_MODULES_FIELD_POSITION_DESC"
 			label="COM_MODULES_FIELD_POSITION_LABEL"
 			maxlength="50"
-			required="true"
 		/>
 
 		<field name="access" type="accesslevel"
@@ -96,9 +94,11 @@
 
 		<field name="content" type="editor"
 			buttons="true"
+			class="inputbox"
 			description="COM_MODULES_FIELD_CONTENT_DESC"
-			filter="ContentHelper::filterText"
+			filter="JComponentHelper::filterText"
 			label="COM_MODULES_FIELD_CONTENT_LABEL"
+			hide="readmore,pagebreak"
 		/>
 
 		<field name="language" type="contentlanguage"

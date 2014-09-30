@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!-- $Id: weblink.xml 20701 2011-02-15 06:05:02Z infograf768 $ -->
 <form>
-	<fieldset>
+	<fieldset addfieldpath="/administrator/components/com_categories/models/fields">
 		<field name="id" type="hidden"
 			default="0"
 			label="WEBLINK_ID_LABEL"
@@ -35,14 +34,14 @@
 		<field name="state" type="list"
 			default="1"
 			description="JFIELD_PUBLISHED_DESC"
-			label="JGLOBAL_STATE"
+			label="JSTATUS"
 			size="1"
 		>
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
 
-		<field name="catid" type="category"
+		<field name="catid" type="categoryedit"
 			description="COM_WEBLINKS_FIELD_CATEGORY_DESC"
 			extension="com_weblinks"
 			label="JCATEGORY"

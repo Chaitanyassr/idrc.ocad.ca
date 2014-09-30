@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: modules.php 20229 2011-01-10 01:40:33Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,31 +19,13 @@ jimport('joomla.application.component.controlleradmin');
 class ModulesControllerModules extends JControllerAdmin
 {
 	/**
-	 * Override the execute method to clear the modules cache for non-display tasks.
-	 *
-	 * @param	string		The task to perform.
-	 * @return	mixed|false	The value returned by the called method, false in error case.
-	 * @since	1.6
-	 */
-	public function execute($task)
-	{
-		parent::execute($task);
-
-		// Clear the component's cache
-		if ($task != 'display') {
-			$cache = JFactory::getCache('com_modules');
-			$cache->clean();
-		}
-	}
-
-	/**
 	 * Method to clone an existing module.
 	 * @since	1.6
 	 */
 	public function duplicate()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Initialise variables.
 		$pks = JRequest::getVar('cid', array(), 'post', 'array');
@@ -65,12 +46,19 @@ class ModulesControllerModules extends JControllerAdmin
 	}
 
 	/**
-	 * Proxy for getModel.
-	 * @since	1.6
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  object  The model.
+	 *
+	 * @since   1.6
 	 */
-	public function &getModel($name = 'Module', $prefix = 'ModulesModel', $config = array())
+	public function getModel($name = 'Module', $prefix = 'ModulesModel', $config = array('ignore_request' => true))
 	{
-		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+		$model = parent::getModel($name, $prefix, $config);
 		return $model;
 	}
 }

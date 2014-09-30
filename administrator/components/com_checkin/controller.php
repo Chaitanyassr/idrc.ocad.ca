@@ -1,25 +1,21 @@
 <?php
 /**
- * @version		$Id: controller.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Checkin
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_checkin
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * Checkin Controller
  *
  * @package		Joomla.Administrator
- * @subpackage	Checkin
+ * @subpackage	com_checkin
  * @since 1.6
  */
-class CheckinController extends JController
+class CheckinController extends JControllerLegacy
 {
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -34,7 +30,7 @@ class CheckinController extends JController
 	public function checkin()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
+		JSession::checkToken() or jexit(JText::_('JInvalid_Token'));
 
 		// Initialise variables.
 		$ids	= JRequest::getVar('cid', array(), '', 'array');

@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: helper.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	mod_search
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -27,7 +26,7 @@ class modSearchHelper
 	 */
 	public static function getSearchImage($button_text)
 	{
-		$img = JHTML::_('image','searchButton.gif', $button_text, NULL, true, true);
+		$img = JHtml::_('image', 'searchButton.gif', $button_text, NULL, true, true);
 		return $img;
 	}
 }

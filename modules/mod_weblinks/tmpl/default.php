@@ -1,6 +1,5 @@
 <?php
 /**
- * @version		$Id: default.php 19979 2010-12-25 04:08:13Z dextercowley $
  * @package		Joomla.Site
  * @subpackage	mod_weblinks
  * @copyright	Copyright (C) 2005 - 2009 Open Source Matters, Inc. All rights reserved.
@@ -24,7 +23,7 @@ defined('_JEXEC') or die;
 
 		case 2:
 			// open in a popup window
-			echo "<a href=\"#\" onclick=\"javascript: window.open('". $link ."', '', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=550'); return false\">".
+			echo "<a href=\"#\" onclick=\"window.open('". $link ."', '', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=550'); return false\">".
 				htmlspecialchars($item->title, ENT_COMPAT, 'UTF-8') .'</a>';
 			break;
 

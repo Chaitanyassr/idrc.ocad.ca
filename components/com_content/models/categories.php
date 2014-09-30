@@ -1,23 +1,21 @@
 <?php
 /**
- * @version		$Id: categories.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.model');
+jimport('joomla.application.component.modellist');
 
 /**
  * This models supports retrieving lists of article categories.
  *
- * @package		Joomla.Administrator
+ * @package		Joomla.Site
  * @subpackage	com_content
  * @since		1.6
  */
-class ContentModelCategories extends JModel
+class ContentModelCategories extends JModelList
 {
 	/**
 	 * Model context string.
@@ -44,7 +42,7 @@ class ContentModelCategories extends JModel
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication();
 		$this->setState('filter.extension', $this->_extension);
@@ -99,7 +97,7 @@ class ContentModelCategories extends JModel
 			$params = new JRegistry();
 
 			if ($active) {
-				$params->loadJSON($active->params);
+				$params->loadString($active->params);
 			}
 
 			$options = array();

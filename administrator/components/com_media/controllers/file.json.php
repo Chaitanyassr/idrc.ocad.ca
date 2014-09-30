@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: file.json.php 20808 2011-02-21 19:55:35Z dextercowley $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -10,7 +9,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
-jimport('joomla.error.log');
+
 /**
  * File Media Controller
  *
@@ -18,7 +17,7 @@ jimport('joomla.error.log');
  * @subpackage	com_media
  * @since		1.6
  */
-class MediaControllerFile extends JController
+class MediaControllerFile extends JControllerLegacy
 {
 	/**
 	 * Upload a file
@@ -27,8 +26,9 @@ class MediaControllerFile extends JController
 	 */
 	function upload()
 	{
+		$params = JComponentHelper::getParams('com_media');
 		// Check for request forgeries
-		if (!JRequest::checkToken('request')) {
+		if (!JSession::checkToken('request')) {
 			$response = array(
 				'status' => '0',
 				'error' => JText::_('JINVALID_TOKEN')
@@ -46,8 +46,22 @@ class MediaControllerFile extends JController
 		$folder		= JRequest::getVar('folder', '', '', 'path');
 		$return		= JRequest::getVar('return-url', null, 'post', 'base64');
 
+		if (
+			$_SERVER['CONTENT_LENGTH']>($params->get('upload_maxsize', 0) * 1024 * 1024) ||
+			$_SERVER['CONTENT_LENGTH']>(int)(ini_get('upload_max_filesize'))* 1024 * 1024 ||
+			$_SERVER['CONTENT_LENGTH']>(int)(ini_get('post_max_size'))* 1024 * 1024 ||
+			$_SERVER['CONTENT_LENGTH']>(int)(ini_get('memory_limit'))* 1024 * 1024
+		)
+		{
+			$response = array(
+					'status' => '0',
+					'error' => JText::_('COM_MEDIA_ERROR_WARNFILETOOLARGE')
+			);
+			echo json_encode($response);
+			return;
+		}
+
 		// Set FTP credentials, if given
-		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
 
 		// Make the filename safe
@@ -58,7 +72,7 @@ class MediaControllerFile extends JController
 			// The request is valid
 			$err = null;
 
-			$filepath = JPath::clean(COM_MEDIA_BASE.DS.$folder.DS.strtolower($file['name']));
+			$filepath = JPath::clean(COM_MEDIA_BASE . '/' . $folder . '/' . strtolower($file['name']));
 
 			if (!MediaHelper::canUpload($file, $err))
 			{
@@ -76,7 +90,7 @@ class MediaControllerFile extends JController
 			$dispatcher	= JDispatcher::getInstance();
 			$object_file = new JObject($file);
 			$object_file->filepath = $filepath;
-			$result = $dispatcher->trigger('onContentBeforeSave', array('com_media.file', &$object_file));
+			$result = $dispatcher->trigger('onContentBeforeSave', array('com_media.file', &$object_file, true));
 			if (in_array(false, $result, true)) {
 				// There are some errors in the plugins
 				$log->addEntry(array('comment' => 'Errors before save: '.$filepath.' : '.implode(', ', $object_file->getErrors())));

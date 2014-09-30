@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: helper.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	mod_breadcrumbs
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,10 +19,13 @@ class modBreadCrumbsHelper
 		$items		= $pathway->getPathWay();
 
 		$count = count($items);
+		// don't use $items here as it references JPathway properties directly
+		$crumbs	= array();
 		for ($i = 0; $i < $count; $i ++)
 		{
-			$items[$i]->name = stripslashes(htmlspecialchars($items[$i]->name, ENT_COMPAT, 'UTF-8'));
-			$items[$i]->link = JRoute::_($items[$i]->link);
+			$crumbs[$i] = new stdClass();
+			$crumbs[$i]->name = stripslashes(htmlspecialchars($items[$i]->name, ENT_COMPAT, 'UTF-8'));
+			$crumbs[$i]->link = JRoute::_($items[$i]->link);
 		}
 
 		if ($params->get('showHome', 1))
@@ -31,10 +33,10 @@ class modBreadCrumbsHelper
 			$item = new stdClass();
 			$item->name = htmlspecialchars($params->get('homeText', JText::_('MOD_BREADCRUMBS_HOME')));
 			$item->link = JRoute::_('index.php?Itemid='.$app->getMenu()->getDefault()->id);
-			array_unshift($items, $item);
+			array_unshift($crumbs, $item);
 		}
 
-		return $items;
+		return $crumbs;
 	}
 
 	/**
@@ -53,10 +55,10 @@ class modBreadCrumbsHelper
 		// specific one first, and if that is not present we load the default separator
 		if ($custom == null) {
 			if ($lang->isRTL()){
-				$_separator = JHTML::_('image','system/arrow_rtl.png', NULL, NULL, true);
+				$_separator = JHtml::_('image', 'system/arrow_rtl.png', NULL, NULL, true);
 			}
 			else{
-				$_separator = JHTML::_('image','system/arrow.png', NULL, NULL, true);
+				$_separator = JHtml::_('image', 'system/arrow.png', NULL, NULL, true);
 			}
 		} else {
 			$_separator = htmlspecialchars($custom);

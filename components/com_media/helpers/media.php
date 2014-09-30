@@ -1,15 +1,16 @@
 <?php
 /**
- * @version		$Id: media.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	Media
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_media
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+defined('_JEXEC') or die;
+
 /**
  * @package		Joomla.Site
- * @subpackage	Media
+ * @subpackage	com_media
  */
 class MediaHelper
 {
@@ -22,7 +23,7 @@ class MediaHelper
 	{
 		static $imageTypes = 'xcf|odg|gif|jpg|png|bmp';
 
-		return preg_match("/$imageTypes/i",$fileName);
+		return preg_match("/$imageTypes/i", $fileName);
 	}
 
 	/**
@@ -72,7 +73,7 @@ class MediaHelper
 		if ($size < 1024) {
 			return JText::sprintf('COM_MEDIA_FILESIZE_BYTES', $size);
 		}
-		else if ($size < 1024 * 1024) {
+		elseif ($size < 1024 * 1024) {
 			return JText::sprintf('COM_MEDIA_FILESIZE_KILOBYTES', sprintf('%01.2f', $size / 1024.0));
 		}
 		else {

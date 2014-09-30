@@ -1,14 +1,10 @@
 <?php
 /**
- * @version		$Id: view.html.php 20630 2011-02-09 19:16:03Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
 
 /**
  * View class for a list of tracks.
@@ -17,7 +13,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_banners
  * @since		1.6
  */
-class BannersViewTracks extends JView
+class BannersViewTracks extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;
@@ -57,11 +53,11 @@ class BannersViewTracks extends JView
 		JToolBarHelper::title(JText::_('COM_BANNERS_MANAGER_TRACKS'), 'banners-tracks.png');
 
 		$bar = JToolBar::getInstance('toolbar');
-			$bar->appendButton('Popup', 'export', 'JTOOLBAR_EXPORT', 'index.php?option=com_banners&amp;view=download&amp;tmpl=component',600,300);
+			$bar->appendButton('Popup', 'export', 'JTOOLBAR_EXPORT', 'index.php?option=com_banners&amp;view=download&amp;tmpl=component', 600, 300);
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		if ($canDo->get('core.delete')) {
-			$bar->appendButton('Confirm','COM_BANNERS_DELETE_MSG', 'delete', 'COM_BANNERS_TRACKS_DELETE', 'tracks.delete',false);
+			$bar->appendButton('Confirm', 'COM_BANNERS_DELETE_MSG', 'delete', 'COM_BANNERS_TRACKS_DELETE', 'tracks.delete', false);
 			JToolBarHelper::divider();
 		}
 		if ($canDo->get('core.admin')) {

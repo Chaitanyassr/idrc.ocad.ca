@@ -382,7 +382,7 @@ var Editor = (function(){
           }
           node = next;
           offset = 0;
-        }        
+        }
       }
     },
 
@@ -1029,7 +1029,7 @@ var Editor = (function(){
         else if (Editor.Parser.firstIndentation)
           newIndent = Editor.Parser.firstIndentation(nextChars, curIndent, direction, firstText);
       }
-      
+
       var indentDiff = newIndent - curIndent;
 
       // If there is too much, this is just a matter of shrinking a span.
@@ -1487,7 +1487,7 @@ var Editor = (function(){
       }
       // Create a part corresponding to a given token.
       function tokenPart(token){
-        var part = makePartSpan(token.value);     
+        var part = makePartSpan(token.value);
         part.className = token.style;
         return part;
       }
@@ -1565,7 +1565,7 @@ var Editor = (function(){
               select.snapshotMove(old.firstChild, part && (part.firstChild || part), 0);
             }
           }
-          
+
           return part;
         }
       };
@@ -1990,7 +1990,7 @@ var select = {};
         else
           end = middle - 1;
       }
-      
+
       if (start == 0) {
         var test1 = selRange(), test2 = test1.duplicate();
         try {
@@ -2575,7 +2575,7 @@ function tokenizer(source, state) {
         source.next();
         return this.take("whitespace");
       }
-      
+
       if (source.applies(isWhiteSpace))
         type = "whitespace";
       else
@@ -2587,6 +2587,7 @@ function tokenizer(source, state) {
   };
   return tokenizer;
 }
+
 /**
  * Storage and control for undo information within a CodeMirror
  * editor. 'Why on earth is such a complicated mess required for
@@ -2827,7 +2828,7 @@ UndoHistory.prototype = {
     this.history.push(diffs);
     if (this.history.length > this.maxDepth) {
       this.history.shift();
-      lostundo += 1;
+      this.lostundo += 1;
     }
   },
 
@@ -3000,6 +3001,7 @@ UndoHistory.prototype = {
     return start;
   }
 };
+
 /* A few useful utility functions. */
 
 // Capture a method on an object.

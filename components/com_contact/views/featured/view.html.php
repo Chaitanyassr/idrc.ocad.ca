@@ -1,17 +1,12 @@
 <?php
 /**
- * @version		$Id: view.html.php 20523 2011-02-03 01:26:20Z dextercowley $
  * @package		Joomla.Site
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.view');
-jimport('joomla.mail.helper');
 
 /**
  * Frontpage View class
@@ -20,7 +15,7 @@ jimport('joomla.mail.helper');
  * @subpackage	com_contact
  * @since		1.6
  */
-class ContactViewFeatured extends JView
+class ContactViewFeatured extends JViewLegacy
 {
 	protected $state;
 	protected $items;
@@ -63,7 +58,7 @@ class ContactViewFeatured extends JView
 			$item		= &$items[$i];
 			$item->slug	= $item->alias ? ($item->id.':'.$item->alias) : $item->id;
 			$temp		= new JRegistry();
-			$temp->loadJSON($item->params);
+			$temp->loadString($item->params);
 			$item->params = clone($params);
 			$item->params->merge($temp);
 			if ($item->params->get('show_email', 0) == 1) {
@@ -114,13 +109,15 @@ class ContactViewFeatured extends JView
 		}
 		$id = (int) @$menu->query['id'];
 
-
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
 			$title = $app->getCfg('sitename');
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0)) {
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
 			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+		}
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
+			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
 		$this->document->setTitle($title);
 
@@ -129,9 +126,14 @@ class ContactViewFeatured extends JView
 			$this->document->setDescription($this->params->get('menu-meta_description'));
 		}
 
-		if ($this->params->get('menu-meta_keywords')) 
+		if ($this->params->get('menu-meta_keywords'))
 		{
 			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+		}
+
+		if ($this->params->get('robots'))
+		{
+			$this->document->setMetadata('robots', $this->params->get('robots'));
 		}
 	}
 }

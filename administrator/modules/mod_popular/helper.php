@@ -1,14 +1,12 @@
 <?php
 /**
- * @version		$Id: helper.php 20541 2011-02-03 21:12:06Z dextercowley $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
 
-JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_content/models', 'ContentModel');
+JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_content/models', 'ContentModel');
 
 jimport('joomla.application.categories');
 
@@ -32,7 +30,7 @@ abstract class modPopularHelper
 		$user = JFactory::getuser();
 
 		// Get an instance of the generic articles model
-		$model = JModel::getInstance('Articles', 'ContentModel', array('ignore_request' => true));
+		$model = JModelLegacy::getInstance('Articles', 'ContentModel', array('ignore_request' => true));
 
 		// Set List SELECT
 		$model->setState('list.select', 'a.id, a.title, a.checked_out, a.checked_out_time, ' .
@@ -74,7 +72,7 @@ abstract class modPopularHelper
 
 		// Set the links
 		foreach ($items as &$item) {
-			if ($user->authorise('core.edit','com_content.article.'.$item->id)){
+			if ($user->authorise('core.edit', 'com_content.article.'.$item->id)){
 				$item->link = JRoute::_('index.php?option=com_content&task=article.edit&id='.$item->id);
 			} else {
 				$item->link = '';

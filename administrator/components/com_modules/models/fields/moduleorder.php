@@ -1,20 +1,16 @@
 <?php
 /**
- * @version		$Id: moduleorder.php 20196 2011-01-09 02:40:25Z ian $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.html.html');
-jimport('joomla.form.formfield');
-
 /**
  * Form Field class for the Joomla Framework.
  *
  * @package		Joomla.Administrator
- * @subpackage	Modules
+ * @subpackage	com_modules
  * @since		1.6
  */
 class JFormFieldModuleOrder extends JFormField
@@ -62,7 +58,6 @@ class JFormFieldModuleOrder extends JFormField
 		$query->select('position, ordering, title');
 		$query->from('#__modules');
 		$query->where('client_id = '.(int) $clientId);
-		$query->where('published > -1');
 		$query->order('ordering');
 
 		$db->setQuery($query);

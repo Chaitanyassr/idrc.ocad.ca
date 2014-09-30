@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: default.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	template.hathor
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -16,8 +15,8 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 // Load the tooltip behavior.
 JHtml::_('behavior.tooltip');
 
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_users&view=debuggroup&user_id='.(int) $this->state->get('filter.user_id'));?>" method="post" name="adminForm" id="adminForm">
@@ -32,26 +31,26 @@ $listDirn	= $this->state->get('list.direction');
 
 		<div class="filter-select fltrt">
 			<label class="selectlabel" for="filter_component"><?php echo JText::_('COM_USERS_OPTION_SELECT_COMPONENT'); ?></label>
-			<select name="filter_component" id="filter_component"class="inputbox">
+			<select name="filter_component" class="inputbox" id="filter_component">
 				<option value=""><?php echo JText::_('COM_USERS_OPTION_SELECT_COMPONENT');?></option>
-				<?php if (!empty($this->components)) { 
+				<?php if (!empty($this->components)) {
 					echo JHtml::_('select.options', $this->components, 'value', 'text', $this->state->get('filter.component'));
 				}?>
 			</select>
-			
+
 			<label class="selectlabel" for="filter_level_start"><?php echo JText::_('COM_USERS_OPTION_SELECT_LEVEL_START'); ?></label>
-			<select name="filter_level_start" id="filter_level_start" class="inputbox">
+			<select name="filter_level_start" class="inputbox" id="filter_level_start">
 				<option value=""><?php echo JText::_('COM_USERS_OPTION_SELECT_LEVEL_START');?></option>
 				<?php echo JHtml::_('select.options', $this->levels, 'value', 'text', $this->state->get('filter.level_start'));?>
 			</select>
 
 			<label class="selectlabel" for="filter_level_end"><?php echo JText::_('COM_USERS_OPTION_SELECT_LEVEL_END'); ?></label>
-			<select name="filter_level_end" id="filter_level_end" class="inputbox">
+			<select name="filter_level_end" class="inputbox" id="filter_level_end">
 				<option value=""><?php echo JText::_('COM_USERS_OPTION_SELECT_LEVEL_END');?></option>
 				<?php echo JHtml::_('select.options', $this->levels, 'value', 'text', $this->state->get('filter.level_end'));?>
 			</select>
-			
-			<button type="button" id="filter-go" onclick="this.form.submit();">
+
+			<button type="submit" id="filter-go">
 				<?php echo JText::_('JSUBMIT'); ?></button>
 		</div>
 

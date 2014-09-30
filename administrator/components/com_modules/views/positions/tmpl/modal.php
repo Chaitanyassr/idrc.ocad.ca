@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: modal.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_modules
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,8 +14,8 @@ JHtml::_('behavior.tooltip');
 
 $function	= JRequest::getCmd('function', 'jSelectPosition');
 $lang		= JFactory::getLanguage();
-$ordering	= $this->state->get('list.ordering');
-$direction	= $this->state->get('list.direction');
+$ordering	= $this->escape($this->state->get('list.ordering'));
+$direction	= $this->escape($this->state->get('list.direction'));
 $clientId	= $this->state->get('filter.client_id');
 $state		= $this->state->get('filter.state');
 $template	= $this->state->get('filter.template');

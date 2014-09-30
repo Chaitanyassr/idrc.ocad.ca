@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: language.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -25,7 +24,7 @@ class LanguagesModelLanguage extends JModelAdmin
 	 * @return	JTable
 	 * @since	1.6
 	 */
-	public function getTable($name='', $prefix='', $options = array())
+	public function getTable($name = '', $prefix = '', $options = array())
 	{
 		return JTable::getInstance('Language');
 	}
@@ -59,7 +58,7 @@ class LanguagesModelLanguage extends JModelAdmin
 	 * @return	mixed	User data object on success, false on failure.
 	 * @since	1.0
 	 */
-	public function &getItem($langId = null)
+	public function getItem($langId = null)
 	{
 		// Initialise variables.
 		$langId	= (!empty($langId)) ? $langId : (int) $this->getState('language.id');
@@ -75,6 +74,12 @@ class LanguagesModelLanguage extends JModelAdmin
 		if ($return === false && $table->getError()) {
 			$this->setError($table->getError());
 			return $false;
+		}
+
+		// Set a valid accesslevel in case '0' is stored due to a bug in the installation SQL.
+		if ($table->access == '0')
+		{
+			$table->access = (int) JFactory::getConfig()->get('access');
 		}
 
 		$properties = $table->getProperties(1);
@@ -145,6 +150,12 @@ class LanguagesModelLanguage extends JModelAdmin
 			$isNew = false;
 		}
 
+		// Prevent white spaces, including East Asian double bytes
+		$spaces = array('/\xE3\x80\x80/', ' ');
+
+		$data['lang_code'] = str_replace($spaces, '', $data['lang_code']);
+		$data['sef'] = str_replace($spaces, '', $data['sef']);
+
 		// Bind the data
 		if (!$table->bind($data)) {
 			$this->setError($table->getError());
@@ -168,7 +179,7 @@ class LanguagesModelLanguage extends JModelAdmin
 
 		// Store the data
 		if (!$table->store()) {
-			$this->setError($this->_db->getErrorMsg());
+			$this->setError($table->getError());
 			return false;
 		}
 
@@ -178,49 +189,19 @@ class LanguagesModelLanguage extends JModelAdmin
 		$this->setState('language.id', $table->lang_id);
 
 		// Clean the cache.
-		$cache = JFactory::getCache('com_languages');
-		$cache->clean();
+		$this->cleanCache();
 
 		return true;
 	}
 
 	/**
-	 * Method to delete from the database.
+	 * Custom clean cache method
 	 *
-	 * @param	integer	$cid	An array of	numeric ids of the rows.
-	 *
-	 * @return	boolean	True on success/false on failure.
 	 * @since	1.6
 	 */
-	public function delete($cid)
+	protected function cleanCache($group = null, $client_id = 0)
 	{
-		$table = $this->getTable();
-
-		for ($i = 0, $c = count($cid); $i < $c; $i++)
-		{
-			// Load the row.
-			$return = $table->load($cid[$i]);
-
-			// Check for an error.
-			if ($return === false) {
-				$this->setError($table->getError());
-				return false;
-			}
-
-			// Delete the row.
-			$return = $table->delete();
-
-			// Check for an error.
-			if ($return === false) {
-				$this->setError($table->getError());
-				return false;
-			}
-		}
-
-		// Clean the cache.
-		$cache = JFactory::getCache('com_languages');
-		$cache->clean();
-
-		return true;
+		parent::cleanCache('_system');
+		parent::cleanCache('com_languages');
 	}
 }

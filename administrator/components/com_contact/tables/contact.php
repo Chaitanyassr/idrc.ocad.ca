@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: contact.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
- * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_contact
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +12,7 @@ defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Administrator
- * @subpackage	Contact
+ * @subpackage	com_contact
  */
 class ContactTableContact extends JTable
 {
@@ -72,13 +71,13 @@ class ContactTableContact extends JTable
 		$user	= JFactory::getUser();
 		if ($this->id) {
 			// Existing item
-			$this->modified		= $date->toMySQL();
+			$this->modified		= $date->toSql();
 			$this->modified_by	= $user->get('id');
 		} else {
 			// New newsfeed. A feed created and created_by field can be set by the user,
 			// so we don't touch either of these if they are set.
 			if (!intval($this->created)) {
-				$this->created = $date->toMySQL();
+				$this->created = $date->toSql();
 			}
 			if (empty($this->created_by)) {
 				$this->created_by = $user->get('id');
@@ -86,7 +85,7 @@ class ContactTableContact extends JTable
 		}
 		// Verify that the alias is unique
 		$table = JTable::getInstance('Contact', 'ContactTable');
-		if ($table->load(array('alias'=>$this->alias,'catid'=>$this->catid)) && ($table->id != $this->id || $this->id==0)) {
+		if ($table->load(array('alias'=>$this->alias, 'catid'=>$this->catid)) && ($table->id != $this->id || $this->id==0)) {
 			$this->setError(JText::_('COM_CONTACT_ERROR_UNIQUE_ALIAS'));
 			return false;
 		}
@@ -111,27 +110,9 @@ class ContactTableContact extends JTable
 			return false;
 		}
 
-		// check for http, https, ftp on webpage
-		if ((strlen($this->webpage) > 0)
-			&& (stripos($this->webpage, 'http://') === false)
-			&& (stripos($this->webpage, 'https://') === false)
-			&& (stripos($this->webpage, 'ftp://') === false))
-		{
-			$this->webpage = 'http://'.$this->webpage;
-		}
-
 		/** check for valid name */
 		if (trim($this->name) == '') {
 			$this->setError(JText::_('COM_CONTACT_WARNING_PROVIDE_VALID_NAME'));
-			return false;
-		}
-				/** check for existing name */
-		$query = 'SELECT id FROM #__contact_details WHERE name = '.$this->_db->Quote($this->name).' AND catid = '.(int) $this->catid;
-		$this->_db->setQuery($query);
-
-		$xid = intval($this->_db->loadResult());
-		if ($xid && $xid != intval($this->id)) {
-			$this->setError(JText::_('COM_CONTACT_WARNING_SAME_NAME'));
 			return false;
 		}
 
@@ -139,7 +120,7 @@ class ContactTableContact extends JTable
 			$this->alias = $this->name;
 		}
 		$this->alias = JApplication::stringURLSafe($this->alias);
-		if (trim(str_replace('-','',$this->alias)) == '') {
+		if (trim(str_replace('-', '', $this->alias)) == '') {
 			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
 		}
 		/** check for valid category */
@@ -150,13 +131,10 @@ class ContactTableContact extends JTable
 
 		// Check the publish down date is not earlier than publish up.
 		if (intval($this->publish_down) > 0 && $this->publish_down < $this->publish_up) {
-			// Swap the dates.
-			$temp = $this->publish_up;
-			$this->publish_up = $this->publish_down;
-			$this->publish_down = $temp;
+			$this->setError(JText::_('JGLOBAL_START_PUBLISH_AFTER_FINISH'));
+			return false;
 		}
 
-		return true;
 		// clean up keywords -- eliminate extra spaces between phrases
 		// and cr (\r) and lf (\n) characters from string
 		if (!empty($this->metakey)) {

@@ -1,20 +1,18 @@
 <?php
 /**
- * @version		$Id: install.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
-// No direct access.
 defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Administrator
  * @subpackage	com_installer
  */
-class InstallerControllerInstall extends JController
+class InstallerControllerInstall extends JControllerLegacy
 {
 	/**
 	 * Install an extension.
@@ -25,7 +23,7 @@ class InstallerControllerInstall extends JController
 	public function install()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		$model = $this->getModel('install');
 		if ($model->install()) {
@@ -37,7 +35,7 @@ class InstallerControllerInstall extends JController
 		$app = JFactory::getApplication();
 		$redirect_url = $app->getUserState('com_installer.redirect_url');
 		if(empty($redirect_url)) {
-			$redirect_url = JRoute::_('index.php?option=com_installer&view=install',false);
+			$redirect_url = JRoute::_('index.php?option=com_installer&view=install', false);
 		} else
 		{
 			// wipe out the user state when we're going to redirect

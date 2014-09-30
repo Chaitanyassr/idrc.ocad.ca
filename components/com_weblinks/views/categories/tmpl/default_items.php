@@ -1,10 +1,9 @@
 <?php
 
 /**
- * @version		$Id: default_items.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
- * @subpackage	com_newsfeeds
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	com_weblinks
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -30,7 +29,7 @@ if (count($this->items[$this->parent->id]) > 0 && $this->maxLevelcat != 0) :
 		<?php if ($this->params->get('show_subcat_desc_cat') == 1) :?>
 		<?php if ($item->description) : ?>
 			<div class="category-desc">
-				<?php echo JHtml::_('content.prepare', $item->description); ?>
+				<?php echo JHtml::_('content.prepare', $item->description, '', 'com_weblinks.categories'); ?>
 			</div>
 		<?php endif; ?>
         <?php endif; ?>

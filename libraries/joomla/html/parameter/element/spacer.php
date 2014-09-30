@@ -1,43 +1,74 @@
 <?php
 /**
- * @version		$Id: spacer.php 20196 2011-01-09 02:40:25Z ian $
- * @package		Joomla.Framework
- * @subpackage	Parameter
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Platform
+ * @subpackage  HTML
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-// No direct access
-defined('JPATH_BASE') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Renders a spacer element
  *
- * @package		Joomla.Framework
- * @subpackage		Parameter
- * @since		1.5
+ * @package     Joomla.Platform
+ * @subpackage  Parameter
+ * @since       11.1
+ * @deprecated  12.1   Use JFormFormFieldSpacer instead
  */
-
 class JElementSpacer extends JElement
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
+	 * Element name
+	 *
+	 * @var    string
+	 */
 	protected $_name = 'Spacer';
 
+	/**
+	 * Fetch tooltip for a radio button
+	 *
+	 * @param   string       $label         Element label
+	 * @param   string       $description   Element description for tool tip
+	 * @param   JXMLElement  &$node         JXMLElement node object containing the settings for the element
+	 * @param   string       $control_name  Control name
+	 * @param   string       $name          The name.
+	 *
+	 * @return  string
+	 *
+	 * @deprecated    12.1
+	 * @since   11.1
+	 */
 	public function fetchTooltip($label, $description, &$node, $control_name, $name)
 	{
 		return '&#160;';
 	}
 
+	/**
+	 * Fetch HTML for a radio button
+	 *
+	 * @param   string       $name          Element name
+	 * @param   string       $value         Element value
+	 * @param   JXMLElement  &$node         JXMLElement node object containing the settings for the element
+	 * @param   string       $control_name  Control name
+	 *
+	 * @return  string
+	 *
+	 * @deprecated    12.1  Use JFormFieldSpacer::getInput instead.
+	 * @since   11.1
+	 */
 	public function fetchElement($name, $value, &$node, $control_name)
 	{
-		if ($value) {
+		// Deprecation warning.
+		JLog::add('JElementSpcer::fetchElements() is deprecated.', JLog::WARNING, 'deprecated');
+
+		if ($value)
+		{
 			return JText::_($value);
-		} else {
+		}
+		else
+		{
 			return ' ';
 		}
 	}

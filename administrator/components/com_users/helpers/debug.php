@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: debug.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,7 +37,7 @@ class UsersHelperDebug
 
 		$items = $db->setQuery($query)->loadObjectList();
 
-		if (sizeof($items)) {
+		if (count($items)) {
 			$lang = JFactory::getLanguage();
 
 			foreach ($items as &$item)
@@ -46,10 +45,8 @@ class UsersHelperDebug
 				// Load language
 				$extension 	= $item->value;
 				$source 	= JPATH_ADMINISTRATOR . '/components/' . $extension;
-				$lang->load("$extension.sys", JPATH_ADMINISTRATOR, null, false, false)
-				||	$lang->load("$extension.sys", $source, null, false, false)
-				||	$lang->load("$extension.sys", JPATH_ADMINISTRATOR, $lang->getDefault(), false, false)
-				||	$lang->load("$extension.sys", $source, $lang->getDefault(), false, false);
+					$lang->load("$extension.sys", JPATH_ADMINISTRATOR, null, false, true)
+				||	$lang->load("$extension.sys", $source, null, false, true);
 
 				// Translate component name
 				$item->text = JText::_($item->text);
@@ -119,10 +116,8 @@ class UsersHelperDebug
 				$extension 	= 'com_config';
 				$source 	= JPATH_ADMINISTRATOR . '/components/' . $extension;
 
-					$lang->load($extension, JPATH_ADMINISTRATOR, null, false, false)
-				||	$lang->load($extension, $source, null, false, false)
-				||	$lang->load($extension, JPATH_ADMINISTRATOR, $lang->getDefault(), false, false)
-				||	$lang->load($extension, $source, $lang->getDefault(), false, false);
+					$lang->load("$extension.sys", JPATH_ADMINISTRATOR, null, false, true)
+				||	$lang->load("$extension.sys", $source, null, false, true);
 			}
 		}
 

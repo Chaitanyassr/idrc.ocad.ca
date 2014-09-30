@@ -1,10 +1,9 @@
 <?php
 
 /**
- * @version		$Id: default.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Site
  * @subpackage	com_newsfeeds
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,25 +18,20 @@ $direction = " ";
 
 if ($lang->isRTL() && $myrtl == 0) {
 	$direction = " redirect-rtl";
-} else
-	if ($lang->isRTL() && $myrtl == 1) {
+} elseif ($lang->isRTL() && $myrtl == 1) {
 		$direction = " redirect-ltr";
-	} else
-		if ($lang->isRTL() && $myrtl == 2) {
+	} elseif ($lang->isRTL() && $myrtl == 2) {
 			$direction = " redirect-rtl";
-		} else
-			if ($myrtl == 0) {
+		} elseif ($myrtl == 0) {
 				$direction = " redirect-ltr";
-			} else
-				if ($myrtl == 1) {
+			} elseif ($myrtl == 1) {
 					$direction = " redirect-ltr";
-				} else
-					if ($myrtl == 2) {
+				} elseif ($myrtl == 2) {
 						$direction = " redirect-rtl";
 					}
 ?>
 <div class="newsfeed<?php echo $this->pageclass_sfx?><?php echo $direction; ?>">
-<?php if ($this->params->get('show_page_heading', 1)) : ?>
+<?php if ($this->params->get('show_page_heading')) : ?>
 <h1 class="<?php echo $direction; ?>">
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
@@ -76,7 +70,7 @@ if ($lang->isRTL() && $myrtl == 0) {
 				{
 					$text = JFilterOutput::stripImages($text);
 				}
-				$text = JHTML::_('string.truncate', $text, $this->params->get('feed_character_count'));
+				$text = JHtml::_('string.truncate', $text, $this->params->get('feed_character_count'));
 					echo str_replace('&apos;', "'", $text);
 				?>
 
@@ -86,4 +80,3 @@ if ($lang->isRTL() && $myrtl == 0) {
 		<?php endforeach; ?>
 		</ol>
 </div>
-

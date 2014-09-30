@@ -1,20 +1,17 @@
 <?php
 /**
- * @version		$Id: vote.php 20727 2011-02-16 10:51:28Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.plugin.plugin');
-
 /**
  * Vote plugin.
  *
- * @package		Joomla
- * @subpackage	plg_vote
+ * @package		Joomla.Plugin
+ * @subpackage	Content.vote
  */
 class plgContentVote extends JPlugin
 {
@@ -48,8 +45,8 @@ class plgContentVote extends JPlugin
 			$img = '';
 
 			// look for images in template if available
-			$starImageOn = JHTML::_('image','system/rating_star.png', NULL, NULL, true);
-			$starImageOff = JHTML::_('image','system/rating_star_blank.png', NULL, NULL, true);
+			$starImageOn = JHtml::_('image', 'system/rating_star.png', NULL, NULL, true);
+			$starImageOff = JHtml::_('image', 'system/rating_star_blank.png', NULL, NULL, true);
 
 			for ($i=0; $i < $rating; $i++) {
 				$img .= $starImageOn;
@@ -66,7 +63,7 @@ class plgContentVote extends JPlugin
 				$uri = JFactory::getURI();
 				$uri->setQuery($uri->getQuery().'&hitcount=0');
 
-				$html .= '<form method="post" action="' . $uri->toString() . '">';
+				$html .= '<form method="post" action="' . htmlspecialchars($uri->toString()) . '">';
 				$html .= '<div class="content_vote">';
 				$html .= JText::_( 'PLG_VOTE_POOR' );
 				$html .= '<input type="radio" title="'.JText::sprintf('PLG_VOTE_VOTE', '1').'" name="user_rating" value="1" />';
@@ -78,7 +75,7 @@ class plgContentVote extends JPlugin
 				$html .= '&#160;<input class="button" type="submit" name="submit_vote" value="'. JText::_( 'PLG_VOTE_RATE' ) .'" />';
 				$html .= '<input type="hidden" name="task" value="article.vote" />';
 				$html .= '<input type="hidden" name="hitcount" value="0" />';
-				$html .= '<input type="hidden" name="url" value="'.  $uri->toString() .'" />';
+				$html .= '<input type="hidden" name="url" value="'.  htmlspecialchars($uri->toString()) .'" />';
 				$html .= JHtml::_('form.token');
 				$html .= '</div>';
 				$html .= '</form>';

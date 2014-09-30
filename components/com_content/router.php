@@ -1,8 +1,7 @@
 <?php
 /**
- * @version		$Id: router.php 20809 2011-02-21 19:59:32Z dextercowley $
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Site
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -46,11 +45,15 @@ function ContentBuildRoute(&$query)
 	}
 
 	// are we dealing with an article or category that is attached to a menu item?
-	if ($menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
+	if (($menuItem instanceof stdClass) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
 		unset($query['view']);
 
 		if (isset($query['catid'])) {
 			unset($query['catid']);
+		}
+		
+		if (isset($query['layout'])) {
+			unset($query['layout']);
 		}
 
 		unset($query['id']);
@@ -66,10 +69,20 @@ function ContentBuildRoute(&$query)
 
 		unset($query['view']);
 
-		if ($view == 'article') { 
+		if ($view == 'article') {
 			if (isset($query['id']) && isset($query['catid']) && $query['catid']) {
 				$catid = $query['catid'];
-				$id = $query['id'];
+				// Make sure we have the id and the alias
+				if (strpos($query['id'], ':') === false) {
+					$db = JFactory::getDbo();
+					$aquery = $db->setQuery($db->getQuery(true)
+						->select('alias')
+						->from('#__content')
+						->where('id='.(int)$query['id'])
+					);
+					$alias = $db->loadResult();
+					$query['id'] = $query['id'].':'.$alias;
+				}
 			} else {
 				// we should have these two set for this view.  If we don't, it is an error
 				return $segments;
@@ -102,7 +115,7 @@ function ContentBuildRoute(&$query)
 
 		$array = array();
 
-		foreach($path AS $id) {
+		foreach($path as $id) {
 			if ((int)$id == (int)$mCatid) {
 				break;
 			}
@@ -236,6 +249,7 @@ function ContentParseRoute($segments)
 			if ($article) {
 				if ($article->alias == $alias) {
 					$vars['view'] = 'article';
+					$vars['catid'] = (int)$article->catid;
 					$vars['id'] = (int)$id;
 
 					return $vars;
@@ -280,7 +294,7 @@ function ContentParseRoute($segments)
 
 	foreach($segments as $segment)
 	{
-		$segment = str_replace(':', '-',$segment);
+		$segment = str_replace(':', '-', $segment);
 
 		foreach($categories as $category)
 		{

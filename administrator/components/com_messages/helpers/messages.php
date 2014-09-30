@@ -1,22 +1,42 @@
 <?php
 /**
- * @version		$Id: messages.php 20740 2011-02-17 10:28:57Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// No direct access.
 defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
 
 /**
  * @package		Joomla.Administrator
  * @subpackage	com_messages
  * @since		1.6
  */
-class MessagesHelper extends JController
+class MessagesHelper
 {
+	/**
+	 * Configure the Linkbar.
+	 *
+	 * @param	string	The name of the active view.
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+
+	public static function addSubmenu($vName)
+	{
+		JSubMenuHelper::addEntry(
+			JText::_('COM_MESSAGES_ADD'),
+			'index.php?option=com_messages&view=message&layout=edit',
+			$vName == 'message'
+		);
+
+		JSubMenuHelper::addEntry(
+			JText::_('COM_MESSAGES_READ'),
+			'index.php?option=com_messages',
+			$vName == 'messages'
+		);
+	}
+
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
@@ -27,12 +47,10 @@ class MessagesHelper extends JController
 		$user	= JFactory::getUser();
 		$result	= new JObject;
 
-		$actions = array(
-			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete'
-		);
+		$actions = JAccess::getActions('com_messages');
 
 		foreach ($actions as $action) {
-			$result->set($action,	$user->authorise($action, 'com_messages'));
+			$result->set($action->name,	$user->authorise($action->name, 'com_messages'));
 		}
 
 		return $result;
@@ -52,6 +70,4 @@ class MessagesHelper extends JController
 		$options[]	= JHtml::_('select.option',	'-2',	JText::_('JTRASHED'));
 		return $options;
 	}
-
-
 }

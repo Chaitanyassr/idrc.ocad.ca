@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension
 	type="module"
-	version="1.6.0"
+	version="2.5"
 	client="site"
 	method="upgrade">
 	<name>mod_wrapper</name>
 	<author>Joomla! Project</author>
 	<creationDate>October 2004</creationDate>
-	<copyright>Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
-	<version>1.6.0</version>
+	<version>2.5.0</version>
 	<description>MOD_WRAPPER_XML_DESCRIPTION</description>
 	<files>
-		<filename
-			module="mod_wrapper">mod_wrapper.php</filename>
+		<filename module="mod_wrapper">mod_wrapper.php</filename>
 		<folder>tmpl</folder>
 		<filename>helper.php</filename>
 		<filename>index.html</filename>
-		<filename>mod_wrapper.xml</filename>
 	</files>
 	<languages>
-		<language
-			tag="en-GB">en-GB.mod_wrapper.ini</language>
+		<language tag="en-GB">en-GB.mod_wrapper.ini</language>
+		<language tag="en-GB">en-GB.mod_wrapper.sys.ini</language>
 	</languages>
 	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_WRAPPER" />
 	<config>
@@ -84,7 +82,17 @@
 					<option
 						value="1">JYES</option>
 				</field>
-
+				<field
+					name="frameborder"
+					type="radio"
+					default="1"
+					label="MOD_WRAPPER_FIELD_FRAME_LABEL"
+					description="MOD_WRAPPER_FIELD_FRAME_DESC">
+					<option
+						value="0">JNO</option>
+					<option
+						value="1">JYES</option>
+				</field>
 				<field
 					name="target"
 					type="text"

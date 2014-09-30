@@ -1,7 +1,6 @@
 <?php
 /**
- * @version		$Id: weblink.php 20228 2011-01-10 00:52:54Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,18 +33,23 @@ class WeblinksModelWeblink extends JModelAdmin
 	 */
 	protected function canDelete($record)
 	{
-		$user = JFactory::getUser();
+		if (!empty($record->id)) {
+			if ($record->state != -2) {
+				return ;
+			}
+			$user = JFactory::getUser();
 
-		if ($record->catid) {
-			return $user->authorise('core.delete', 'com_weblinks.category.'.(int) $record->catid);
-		}
-		else {
-			return parent::canDelete($record);
+			if ($record->catid) {
+				return $user->authorise('core.delete', 'com_weblinks.category.'.(int) $record->catid);
+			}
+			else {
+				return parent::canDelete($record);
+			}
 		}
 	}
 
 	/**
-	 * Method to test whether a record can be deleted.
+	 * Method to test whether a record can have its state changed.
 	 *
 	 * @param	object	A record object.
 	 * @return	boolean	True if allowed to change the state of the record. Defaults to the permission set in the component.
@@ -116,8 +120,8 @@ class WeblinksModelWeblink extends JModelAdmin
 			// The controller has already verified this is a record you can edit.
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('state', 'filter', 'unset');
-			$form->setFieldAttribute('publish_up', 'filter', 'true');
-			$form->setFieldAttribute('publish_down', 'filter', 'true');
+			$form->setFieldAttribute('publish_up', 'filter', 'unset');
+			$form->setFieldAttribute('publish_down', 'filter', 'unset');
 		}
 
 		return $form;
@@ -160,7 +164,7 @@ class WeblinksModelWeblink extends JModelAdmin
 		if ($item = parent::getItem($pk)) {
 			// Convert the params field to an array.
 			$registry = new JRegistry;
-			$registry->loadJSON($item->metadata);
+			$registry->loadString($item->metadata);
 			$item->metadata = $registry->toArray();
 		}
 
@@ -174,7 +178,6 @@ class WeblinksModelWeblink extends JModelAdmin
 	 */
 	protected function prepareTable(&$table)
 	{
-		jimport('joomla.filter.output');
 		$date = JFactory::getDate();
 		$user = JFactory::getUser();
 

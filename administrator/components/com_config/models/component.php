@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$Id: component.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Administrator
  * @subpackage	com_config
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,6 +17,22 @@ jimport('joomla.application.component.modelform');
  */
 class ConfigModelComponent extends JModelForm
 {
+	/**
+	 * The event to trigger before saving the data.
+	 *
+	 * @var    string
+	 * @since  2.5.10
+	 */
+	protected $event_before_save = 'onConfigurationBeforeSave';
+
+	/**
+	 * The event to trigger before deleting the data.
+	 *
+	 * @var    string
+	 * @since  2.5.10
+	 */
+	protected $event_after_save = 'onConfigurationAfterSave';
+
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -34,7 +49,7 @@ class ConfigModelComponent extends JModelForm
 
 		// Set an alternative path for the configuration file.
 		if ($path = JRequest::getString('path')) {
-			$path = JPath::clean(JPATH_SITE.DS.$path);
+			$path = JPath::clean(JPATH_SITE . '/' . $path);
 			JPath::check($path);
 			$this->setState('component.path', $path);
 		}
@@ -51,8 +66,6 @@ class ConfigModelComponent extends JModelForm
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
-		jimport('joomla.form.form');
-
 		if ($path = $this->getState('component.path')) {
 			// Add the search path for the admin component config.xml file.
 			JForm::addFormPath($path);
@@ -71,7 +84,8 @@ class ConfigModelComponent extends JModelForm
 				'/config'
 			);
 
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 
@@ -91,10 +105,8 @@ class ConfigModelComponent extends JModelForm
 
 		// Load common and local language files.
 		$lang = JFactory::getLanguage();
-			$lang->load($option, JPATH_BASE, null, false, false)
-		||	$lang->load($option, JPATH_BASE . "/components/$option", null, false, false)
-		||	$lang->load($option, JPATH_BASE, $lang->getDefault(), false, false)
-		||	$lang->load($option, JPATH_BASE . "/components/$option", $lang->getDefault(), false, false);
+			$lang->load($option, JPATH_BASE, null, false, true)
+		||	$lang->load($option, JPATH_BASE . "/components/$option", null, false, true);
 
 		$result = JComponentHelper::getComponent($option);
 
@@ -111,24 +123,28 @@ class ConfigModelComponent extends JModelForm
 	 */
 	public function save($data)
 	{
+		$dispatcher = JDispatcher::getInstance();
 		$table	= JTable::getInstance('extension');
+		$isNew = true;
 
 		// Save the rules.
-		if (isset($data['params']) && isset($data['params']['rules'])) {
-			jimport('joomla.access.rules');
-			$rules	= new JRules($data['params']['rules']);
+		if (isset($data['params']) && isset($data['params']['rules']))
+		{
+			$rules	= new JAccessRules($data['params']['rules']);
 			$asset	= JTable::getInstance('asset');
 
-			if (!$asset->loadByName($data['option'])) {
+			if (!$asset->loadByName($data['option']))
+			{
 				$root	= JTable::getInstance('asset');
 				$root->loadByName('root.1');
 				$asset->name = $data['option'];
 				$asset->title = $data['option'];
-				$asset->setLocation($root->id,'last-child');
+				$asset->setLocation($root->id, 'last-child');
 			}
 			$asset->rules = (string) $rules;
 
-			if (!$asset->check() || !$asset->store()) {
+			if (!$asset->check() || !$asset->store())
+			{
 				$this->setError($asset->getError());
 				return false;
 			}
@@ -139,7 +155,8 @@ class ConfigModelComponent extends JModelForm
 		}
 
 		// Load the previous Data
-		if (!$table->load($data['id'])) {
+		if (!$table->load($data['id']))
+		{
 			$this->setError($table->getError());
 			return false;
 		}
@@ -147,26 +164,40 @@ class ConfigModelComponent extends JModelForm
 		unset($data['id']);
 
 		// Bind the data.
-		if (!$table->bind($data)) {
+		if (!$table->bind($data))
+		{
 			$this->setError($table->getError());
 			return false;
 		}
 
 		// Check the data.
-		if (!$table->check()) {
+		if (!$table->check())
+		{
+			$this->setError($table->getError());
+			return false;
+		}
+
+		// Trigger the oonConfigurationBeforeSave event.
+		$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, $table, $isNew));
+
+		if (in_array(false, $result, true))
+		{
 			$this->setError($table->getError());
 			return false;
 		}
 
 		// Store the data.
-		if (!$table->store()) {
+		if (!$table->store())
+		{
 			$this->setError($table->getError());
 			return false;
 		}
 
-		// Clean the cache.
-		$cache = JFactory::getCache('_system');
-		$cache->clean();
+		// Clean the component cache.
+		$this->cleanCache('_system');
+
+		// Trigger the onConfigurationAfterSave event.
+		$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, $table, $isNew));
 
 		return true;
 	}
