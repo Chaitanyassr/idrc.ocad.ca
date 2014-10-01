@@ -169,12 +169,12 @@ $menu = JSite::getMenu();
       <jdoc:include type="component" style="xhtml" />            
       
       <?php if (JRequest::getVar('view') == 'featured'): ?>
-      <jdoc:include type="modules" name="middle-center" style="xhtml" />
-      
-        <div>
-            <h2>Featured Projects</h2>        
+        <h2>Latest News</h2> 
+        <jdoc:include type="modules" name="middle-center" style="xhtml" />
+
+        <h2>Featured Projects</h2>        
           <jdoc:include type="modules" name="middle-left" style="xhtml" />
-        </div>      
+
         
       <?php endif; ?>
       
