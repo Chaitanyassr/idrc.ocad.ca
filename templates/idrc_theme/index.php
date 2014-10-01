@@ -97,7 +97,7 @@ $menu = JSite::getMenu();
 </head>
 
 <body class="uio-demo-theme fl-focus fl-theme-uio-default">
-    <ul id="skip-links">
+    <ul class="fl-offScreen-hidden">
       <li><a href="#to-menu">Skip to Menu</a></li> 
       <li><a href="#to-content">Skip to Content</a></li>  
       <li><a href="#to-search">Skip to Search</a></li> 
